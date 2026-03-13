@@ -12,6 +12,7 @@ const __dirname = path.dirname(__filename)
 
 // Import routes
 import healthRoutes from './routes/health.js'
+import cliRoutes from './routes/cli.js'
 
 const app = express()
 const PORT = process.env.PORT || 8080
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.use('/api/health', healthRoutes)
+app.use('/api', cliRoutes)
 
 // Root endpoint
 app.get('/', (req, res) => {

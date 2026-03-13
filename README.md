@@ -22,8 +22,18 @@ openclaw-dashboard/
 ├── backend/           # Node.js + Express backend
 │   ├── src/
 │   │   ├── routes/      # API route handlers
+│   │   │   ├── cli.js   # CLI adapter routes
+│   │   │   └── health.js # Health check routes
 │   │   ├── middleware/  # Express middleware
+│   │   ├── cli-adapter/ # CLI command wrapper
+│   │   │   ├── index.js     # Module entry
+│   │   │   ├── executor.js  # Command executor
+│   │   │   ├── commands.js  # CLI commands wrapper
+│   │   │   ├── schema.js    # Output validation
+│   │   │   ├── parsers.js   # Text output parsers
+│   │   │   └── README.md    # Documentation
 │   │   └── index.js     # Server entry point
+│   ├── tests/         # Unit tests
 │   ├── package.json
 │   └── .env
 └── README.md
@@ -47,9 +57,18 @@ npm start
 The backend server will start on **http://localhost:8080**
 
 **API Endpoints:**
+
+**Health:**
 - `GET /` - API info
 - `GET /api/health` - Health check endpoint
 - `GET /api/health/ready` - Readiness check endpoint
+
+**CLI Adapter (OpenClaw Integration):**
+- `GET /api/status` - Get system status
+- `GET /api/agents` - Get Agent list
+- `GET /api/sessions` - Get session list
+- `GET /api/cron` - Get cron job list
+- `GET /api/config` - Get configuration (optional `?key=` parameter)
 
 ### Frontend Setup
 
@@ -79,6 +98,51 @@ The frontend dev server will start on **http://localhost:3000**
 |---------|-------------|
 | `npm start` | Start production server |
 | `npm run dev` | Start development server with auto-reload |
+| `npm test` | Run unit tests |
+| `npm run test:coverage` | Run tests with coverage report |
+| `npm run test:watch` | Run tests in watch mode |
+
+## 🔌 CLI Adapter
+
+The CLI Adapter module provides a stable API layer for interacting with OpenClaw CLI commands.
+
+### Features
+
+- **Command Execution**: Wraps `child_process.exec` with timeout control and retry logic
+- **Output Parsing**: Parses CLI text output into structured JSON
+- **Schema Validation**: Validates CLI output format
+- **Error Handling**: Graceful error handling with friendly messages
+
+### Usage Example
+
+```javascript
+import {
+  getStatus,
+  getAgentsList,
+  getSessionsList,
+} from './backend/src/cli-adapter/index.js'
+
+// Get system status
+const status = await getStatus()
+
+// Get agents list
+const agents = await getAgentsList()
+console.log(`Found ${agents.count} agents`)
+```
+
+### API Response Format
+
+All CLI adapter endpoints return a consistent format:
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "timestamp": "2026-03-13T00:00:00.000Z"
+}
+```
+
+For detailed documentation, see [`backend/src/cli-adapter/README.md`](backend/src/cli-adapter/README.md).
 
 ## 🔧 Configuration
 
