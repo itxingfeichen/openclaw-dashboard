@@ -7,6 +7,7 @@ import {
   SettingOutlined
 } from '@ant-design/icons'
 import Dashboard from './pages/Dashboard/Dashboard'
+import AgentsPage from './pages/Agents/AgentsPage'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -42,12 +43,7 @@ function App() {
       case 'dashboard':
         return <Dashboard />
       case 'agents':
-        return (
-          <div style={{ padding: '24px' }}>
-            <h1>Agent 管理</h1>
-            <p>Agent 管理页面开发中...</p>
-          </div>
-        )
+        return <AgentsPage />
       case 'tasks':
         return (
           <div style={{ padding: '24px' }}>
