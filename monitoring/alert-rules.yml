@@ -1,0 +1,241 @@
+# Prometheus Alert Rules for OpenClaw Dashboard
+# Import this file into your Prometheus configuration
+
+groups:
+  - name: openclaw_dashboard_alerts
+    interval: 30s
+    rules:
+      # ==================== High Error Rate ====================
+      - alert: HighErrorRate
+        expr: sum(rate(errors_total[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }} errors/sec over the last 5 minutes"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-error-rate"
+
+      - alert: CriticalErrorRate
+        expr: sum(rate(errors_total{severity="critical"}[5m])) > 0.01
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical error rate detected"
+          description: "Critical error rate is {{ $value }} errors/sec over the last 2 minutes"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/critical-error-rate"
+
+      # ==================== High Latency ====================
+      - alert: HighRequestLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency detected"
+          description: "95th percentile latency is {{ $value }}s (threshold: 0.5s)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-latency"
+
+      - alert: VeryHighRequestLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Very high request latency detected"
+          description: "95th percentile latency is {{ $value }}s (threshold: 1s)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/very-high-latency"
+
+      # ==================== High CPU Usage ====================
+      - alert: HighCPUUsage
+        expr: 1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }} (threshold: 80%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-cpu"
+
+      - alert: CriticalCPUUsage
+        expr: 1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) > 0.95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }} (threshold: 95%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/critical-cpu"
+
+      # ==================== High Memory Usage ====================
+      - alert: HighMemoryUsage
+        expr: 1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value | humanizePercentage }} (threshold: 85%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-memory"
+
+      - alert: CriticalMemoryUsage
+        expr: 1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical memory usage detected"
+          description: "Memory usage is {{ $value | humanizePercentage }} (threshold: 95%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/critical-memory"
+
+      - alert: NodejsHeapMemoryHigh
+        expr: nodejs_heap_size_used_bytes / nodejs_heap_size_total_bytes > 0.85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node.js heap memory usage is high"
+          description: "Heap memory usage is {{ $value | humanizePercentage }} (threshold: 85%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/nodejs-heap-high"
+
+      - alert: NodejsHeapMemoryCritical
+        expr: nodejs_heap_size_used_bytes / nodejs_heap_size_total_bytes > 0.95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node.js heap memory usage is critical"
+          description: "Heap memory usage is {{ $value | humanizePercentage }} (threshold: 95%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/nodejs-heap-critical"
+
+      # ==================== Service Down ====================
+      - alert: ServiceDown
+        expr: up{job="openclaw-dashboard"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "OpenClaw Dashboard service is down"
+          description: "Service {{ $labels.instance }} has been down for more than 1 minute"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/service-down"
+
+      # ==================== High Request Rate ====================
+      - alert: UnusualHighRequestRate
+        expr: sum(rate(http_requests_total[5m])) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Unusually high request rate"
+          description: "Request rate is {{ $value }} req/s (threshold: 1000 req/s)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-request-rate"
+
+      # ==================== Database Issues ====================
+      - alert: HighDatabaseQueryLatency
+        expr: histogram_quantile(0.95, rate(db_query_duration_milliseconds_bucket[5m])) > 500
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High database query latency"
+          description: "95th percentile DB query latency is {{ $value }}ms (threshold: 500ms)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-db-latency"
+
+      - alert: DatabaseQueryRateHigh
+        expr: sum(rate(db_queries_total[5m])) > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High database query rate"
+          description: "Database query rate is {{ $value }} queries/s (threshold: 100 queries/s)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-db-query-rate"
+
+      # ==================== Cache Issues ====================
+      - alert: LowCacheHitRate
+        expr: sum(rate(cache_hits_total[5m])) / (sum(rate(cache_hits_total[5m])) + sum(rate(cache_misses_total[5m]))) < 0.5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 50%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/low-cache-hit-rate"
+
+      # ==================== Event Loop Lag ====================
+      - alert: HighEventLoopLag
+        expr: nodejs_eventloop_lag_seconds > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Node.js event loop lag"
+          description: "Event loop lag is {{ $value }}s (threshold: 0.5s)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-event-loop-lag"
+
+      - alert: CriticalEventLoopLag
+        expr: nodejs_eventloop_lag_seconds > 1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical Node.js event loop lag"
+          description: "Event loop lag is {{ $value }}s (threshold: 1s)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/critical-event-loop-lag"
+
+      # ==================== In-Flight Requests ====================
+      - alert: HighInFlightRequests
+        expr: sum(http_requests_in_flight) > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of in-flight requests"
+          description: "In-flight requests: {{ $value }} (threshold: 100)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/high-inflight-requests"
+
+      # ==================== Disk Space ====================
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.15
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space available is {{ $value | humanizePercentage }} (threshold: 15%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/low-disk-space"
+
+      - alert: CriticalLowDiskSpace
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical low disk space"
+          description: "Disk space available is {{ $value | humanizePercentage }} (threshold: 5%)"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/critical-low-disk-space"
+
+  # ==================== Health Check Alerts ====================
+  - name: openclaw_health_checks
+    interval: 30s
+    rules:
+      - alert: HealthCheckFailed
+        expr: probe_success{job="openclaw-health"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Health check failed"
+          description: "Health check for {{ $labels.instance }} has been failing for 2 minutes"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/health-check-failed"
+
+      - alert: HealthCheckDegraded
+        expr: probe_http_status_code{job="openclaw-health"} != 200
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Health check degraded"
+          description: "Health check returning status {{ $value }} for {{ $labels.instance }}"
+          runbook_url: "https://wiki.openclaw.dev/runbooks/health-check-degraded"

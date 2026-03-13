@@ -16,22 +16,44 @@ import cliRoutes from './routes/cli.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
+import { createMetricsMiddleware } from './metrics/middleware.js'
 import { logInfo, logRequest } from './utils/logger.js'
+import { getPerformanceMonitor } from './utils/performance-monitor.js'
 
 const app = express()
 const PORT = process.env.PORT || 8080
+
+// Initialize performance monitor
+const performanceMonitor = getPerformanceMonitor({
+  slowQueryThreshold: 1000,
+  enableMemoryLeakDetection: true,
+})
 
 // Middleware
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// 请求日志中间件
+// Metrics collection middleware
+app.use(createMetricsMiddleware({
+  trackResponseTime: true,
+  trackInFlight: true,
+  logSlowRequests: true,
+  slowRequestThreshold: 1000,
+}))
+
+// Request logging middleware
 app.use((req, res, next) => {
   const start = Date.now()
   res.on('finish', () => {
     const duration = Date.now() - start
+    const route = req.route?.path || req.path
+    
+    // Log request
     logRequest(req, res.statusCode, duration)
+    
+    // Record performance metrics
+    performanceMonitor.recordResponseTime(route, req.method, duration)
   })
   next()
 })
@@ -46,6 +68,8 @@ app.get('/', asyncHandler(async (req, res) => {
     name: 'OpenClaw Dashboard API',
     version: '0.1.0',
     status: 'running',
+    healthCheck: '/api/health',
+    metrics: '/api/health/metrics',
   })
 }))
 
@@ -55,11 +79,63 @@ app.use(notFoundHandler())
 // Global error handler (must be last)
 app.use(errorHandler())
 
+// Handle performance monitor events
+performanceMonitor.on('slowResponse', (data) => {
+  logInfo('Slow response detected', data)
+})
+
+performanceMonitor.on('slowQuery', (data) => {
+  logInfo('Slow query detected', data)
+})
+
+performanceMonitor.on('memoryLeakWarning', (data) => {
+  logInfo('Memory leak warning', data)
+})
+
+// Graceful shutdown
+let server
+
+process.on('SIGTERM', () => {
+  logInfo('SIGTERM received, shutting down gracefully')
+  if (server) {
+    server.close(() => {
+      logInfo('Server closed')
+      performanceMonitor.stop()
+      process.exit(0)
+    })
+    
+    // Force close after 10 seconds
+    setTimeout(() => {
+      logInfo('Forcing shutdown')
+      performanceMonitor.stop()
+      process.exit(1)
+    }, 10000)
+  } else {
+    process.exit(0)
+  }
+})
+
+process.on('SIGINT', () => {
+  logInfo('SIGINT received, shutting down gracefully')
+  if (server) {
+    server.close(() => {
+      logInfo('Server closed')
+      performanceMonitor.stop()
+      process.exit(0)
+    })
+  } else {
+    process.exit(0)
+  }
+})
+
 // Start server
-app.listen(PORT, () => {
+server = app.listen(PORT, () => {
   logInfo('Server started', {
     port: PORT,
     url: `http://localhost:${PORT}`,
     healthCheck: `http://localhost:${PORT}/api/health`,
+    metrics: `http://localhost:${PORT}/api/health/metrics`,
   })
 })
+
+export default app
