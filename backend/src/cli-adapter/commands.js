@@ -16,6 +16,10 @@ const CLI_COMMANDS = {
   SESSIONS_LIST: 'openclaw sessions --json',
   CRON_LIST: 'openclaw cron list',
   CONFIG_GET: 'openclaw config get',
+  AGENT_START: 'openclaw agents start',
+  AGENT_STOP: 'openclaw agents stop',
+  AGENT_RESTART: 'openclaw agents restart',
+  AGENT_STATUS: 'openclaw agents status',
 }
 
 /**
@@ -168,6 +172,110 @@ export async function executeCustomCommand(command, options = {}) {
   return result.data
 }
 
+/**
+ * 启动 Agent
+ * @param {string} agentId - Agent ID
+ * @returns {Promise<Object>} 执行结果
+ */
+export async function startAgent(agentId) {
+  const command = `${CLI_COMMANDS.AGENT_START} ${agentId}`
+  const result = await executeCli(command, {
+    timeout: 30000,
+    retries: 0,
+    parseJson: true,
+  })
+
+  if (!result.success) {
+    return {
+      success: false,
+      error: result.error || '启动 Agent 失败',
+    }
+  }
+
+  return {
+    success: true,
+    data: result.data,
+  }
+}
+
+/**
+ * 停止 Agent
+ * @param {string} agentId - Agent ID
+ * @returns {Promise<Object>} 执行结果
+ */
+export async function stopAgent(agentId) {
+  const command = `${CLI_COMMANDS.AGENT_STOP} ${agentId}`
+  const result = await executeCli(command, {
+    timeout: 30000,
+    retries: 0,
+    parseJson: true,
+  })
+
+  if (!result.success) {
+    return {
+      success: false,
+      error: result.error || '停止 Agent 失败',
+    }
+  }
+
+  return {
+    success: true,
+    data: result.data,
+  }
+}
+
+/**
+ * 重启 Agent
+ * @param {string} agentId - Agent ID
+ * @returns {Promise<Object>} 执行结果
+ */
+export async function restartAgent(agentId) {
+  const command = `${CLI_COMMANDS.AGENT_RESTART} ${agentId}`
+  const result = await executeCli(command, {
+    timeout: 30000,
+    retries: 0,
+    parseJson: true,
+  })
+
+  if (!result.success) {
+    return {
+      success: false,
+      error: result.error || '重启 Agent 失败',
+    }
+  }
+
+  return {
+    success: true,
+    data: result.data,
+  }
+}
+
+/**
+ * 获取 Agent 状态
+ * @param {string} agentId - Agent ID
+ * @returns {Promise<Object>} 执行结果
+ */
+export async function getAgentStatus(agentId) {
+  const command = `${CLI_COMMANDS.AGENT_STATUS} ${agentId}`
+  const result = await executeCli(command, {
+    timeout: 30000,
+    retries: 0,
+    parseJson: true,
+  })
+
+  if (!result.success) {
+    return {
+      success: false,
+      error: result.error || '无法获取 Agent 状态',
+    }
+  }
+
+  return {
+    success: true,
+    data: result.data,
+  }
+}
+
 export default {
   getStatus,
   getAgentsList,
@@ -175,5 +283,9 @@ export default {
   getCronList,
   getConfig,
   executeCustomCommand,
+  startAgent,
+  stopAgent,
+  restartAgent,
+  getAgentStatus,
   COMMANDS: CLI_COMMANDS,
 }

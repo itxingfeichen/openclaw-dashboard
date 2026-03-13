@@ -4,7 +4,7 @@ import { AppstoreOutlined, UnorderedListOutlined, PlusOutlined } from '@ant-desi
 import AgentFilter from '../../components/AgentFilter';
 import AgentTable from '../../components/AgentTable';
 import AgentCard from '../../components/AgentCard';
-import { fetchAgents } from '../../services/agentService';
+import { fetchAgents, startAgent, stopAgent, restartAgent, getAgentStatus } from '../../services/agentService';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -169,6 +169,7 @@ const AgentsPage = () => {
             loading={loading}
             pagination={pagination}
             onChange={handleTableChange}
+            onRefresh={loadAgents}
           />
         ) : (
           <div>
@@ -187,7 +188,7 @@ const AgentsPage = () => {
                     lg={6}
                     xl={4}
                   >
-                    <AgentCard agent={agent} />
+                    <AgentCard agent={agent} onRefresh={loadAgents} />
                   </Col>
                 ))}
               </Row>

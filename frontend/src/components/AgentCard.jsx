@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Tag, Space, Typography, Badge } from 'antd';
-import { ClockOutlined, IdcardOutlined } from '@ant-design/icons';
-import { getStatusColor } from '../services/agentService';
+import { Card, Tag, Space, Typography, Badge, Button, message, Popconfirm } from 'antd';
+import { ClockOutlined, IdcardOutlined, PlayCircleOutlined, StopOutlined, ReloadOutlined } from '@ant-design/icons';
+import { getStatusColor, startAgent, stopAgent, restartAgent } from '../services/agentService';
 import { useNavigate } from 'react-router-dom';
 
 const { Text, Paragraph } = Typography;
@@ -10,11 +10,59 @@ const { Text, Paragraph } = Typography;
  * AgentCard Component
  * Displays agent information in card format
  */
-const AgentCard = ({ agent }) => {
+const AgentCard = ({ agent, onRefresh }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(`/agents/${agent.id}`);
+  };
+
+  /**
+   * Handle agent start
+   */
+  const handleStart = async (e) => {
+    e.stopPropagation();
+    try {
+      const result = await startAgent(agent.id);
+      if (result.success) {
+        message.success(`Agent ${agent.id} 启动成功`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      message.error(`启动失败：${error.message}`);
+    }
+  };
+
+  /**
+   * Handle agent stop
+   */
+  const handleStop = async (e) => {
+    e.stopPropagation();
+    try {
+      const result = await stopAgent(agent.id);
+      if (result.success) {
+        message.success(`Agent ${agent.id} 停止成功`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      message.error(`停止失败：${error.message}`);
+    }
+  };
+
+  /**
+   * Handle agent restart
+   */
+  const handleRestart = async (e) => {
+    e.stopPropagation();
+    try {
+      const result = await restartAgent(agent.id);
+      if (result.success) {
+        message.success(`Agent ${agent.id} 重启成功`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      message.error(`重启失败：${error.message}`);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -87,6 +135,53 @@ const AgentCard = ({ agent }) => {
                     {cap}
                   </Tag>
                 ))}
+              </Space>
+
+              {/* Action buttons */}
+              <Space style={{ marginTop: 8 }} onClick={(e) => e.stopPropagation()}>
+                <Popconfirm
+                  title="确定要启动此 Agent 吗？"
+                  onConfirm={handleStart}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <Button
+                    size="small"
+                    type="primary"
+                    icon={<PlayCircleOutlined />}
+                    disabled={agent.status === 'active' || agent.status === 'running'}
+                  >
+                    启动
+                  </Button>
+                </Popconfirm>
+                <Popconfirm
+                  title="确定要停止此 Agent 吗？"
+                  onConfirm={handleStop}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <Button
+                    size="small"
+                    danger
+                    icon={<StopOutlined />}
+                    disabled={agent.status === 'inactive' || agent.status === 'stopped'}
+                  >
+                    停止
+                  </Button>
+                </Popconfirm>
+                <Popconfirm
+                  title="确定要重启此 Agent 吗？"
+                  onConfirm={handleRestart}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <Button
+                    size="small"
+                    icon={<ReloadOutlined />}
+                  >
+                    重启
+                  </Button>
+                </Popconfirm>
               </Space>
             </Space>
           </div>

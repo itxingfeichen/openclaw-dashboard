@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename)
 // Import routes
 import healthRoutes from './routes/health.js'
 import cliRoutes from './routes/cli.js'
+import agentControlRoutes from './routes/agents.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -61,6 +62,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/health', healthRoutes)
 app.use('/api', cliRoutes)
+app.use('/api/agents', agentControlRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {

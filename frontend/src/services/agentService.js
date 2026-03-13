@@ -254,8 +254,10 @@ export async function fetchAgentById(id) {
 export function getStatusColor(status) {
   switch (status) {
     case 'active':
+    case 'running':
       return 'success';
     case 'inactive':
+    case 'stopped':
       return 'default';
     case 'unknown':
       return 'warning';
@@ -264,8 +266,107 @@ export function getStatusColor(status) {
   }
 }
 
+/**
+ * Start an agent
+ * @param {string} id - Agent ID
+ */
+export async function startAgent(id) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agents/${id}/start`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to start agent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Stop an agent
+ * @param {string} id - Agent ID
+ */
+export async function stopAgent(id) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agents/${id}/stop`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to stop agent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Restart an agent
+ * @param {string} id - Agent ID
+ */
+export async function restartAgent(id) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agents/${id}/restart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to restart agent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get agent status
+ * @param {string} id - Agent ID
+ */
+export async function getAgentStatus(id) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agents/${id}/status`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to get agent status:', error);
+    throw error;
+  }
+}
+
 export default {
   fetchAgents,
   fetchAgentById,
   getStatusColor,
+  startAgent,
+  stopAgent,
+  restartAgent,
+  getAgentStatus,
 };

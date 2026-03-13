@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table, Tag, Space, Typography, Button } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
-import { getStatusColor } from '../services/agentService';
+import { Table, Tag, Space, Typography, Button, message, Popconfirm } from 'antd';
+import { EyeOutlined, PlayCircleOutlined, StopOutlined, ReloadOutlined } from '@ant-design/icons';
+import { getStatusColor, startAgent, stopAgent, restartAgent } from '../services/agentService';
 import { useNavigate } from 'react-router-dom';
 
 const { Text } = Typography;
@@ -10,8 +10,53 @@ const { Text } = Typography;
  * AgentTable Component
  * Displays agent information in table format
  */
-const AgentTable = ({ data, loading, pagination, onChange }) => {
+const AgentTable = ({ data, loading, pagination, onChange, onRefresh }) => {
   const navigate = useNavigate();
+
+  /**
+   * Handle agent start
+   */
+  const handleStart = async (id) => {
+    try {
+      const result = await startAgent(id);
+      if (result.success) {
+        message.success(`Agent ${id} 启动成功`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      message.error(`启动失败：${error.message}`);
+    }
+  };
+
+  /**
+   * Handle agent stop
+   */
+  const handleStop = async (id) => {
+    try {
+      const result = await stopAgent(id);
+      if (result.success) {
+        message.success(`Agent ${id} 停止成功`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      message.error(`停止失败：${error.message}`);
+    }
+  };
+
+  /**
+   * Handle agent restart
+   */
+  const handleRestart = async (id) => {
+    try {
+      const result = await restartAgent(id);
+      if (result.success) {
+        message.success(`Agent ${id} 重启成功`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      message.error(`重启失败：${error.message}`);
+    }
+  };
 
   const columns = [
     {
@@ -78,15 +123,63 @@ const AgentTable = ({ data, loading, pagination, onChange }) => {
     {
       title: '操作',
       key: 'action',
-      width: 100,
+      width: 250,
       render: (_, record) => (
-        <Button
-          type="link"
-          icon={<EyeOutlined />}
-          onClick={() => navigate(`/agents/${record.id}`)}
-        >
-          详情
-        </Button>
+        <Space size="small">
+          <Popconfirm
+            title="确定要启动此 Agent 吗？"
+            onConfirm={() => handleStart(record.id)}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button
+              type="link"
+              size="small"
+              icon={<PlayCircleOutlined />}
+              disabled={record.status === 'active' || record.status === 'running'}
+            >
+              启动
+            </Button>
+          </Popconfirm>
+          <Popconfirm
+            title="确定要停止此 Agent 吗？"
+            onConfirm={() => handleStop(record.id)}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button
+              type="link"
+              size="small"
+              icon={<StopOutlined />}
+              danger
+              disabled={record.status === 'inactive' || record.status === 'stopped'}
+            >
+              停止
+            </Button>
+          </Popconfirm>
+          <Popconfirm
+            title="确定要重启此 Agent 吗？"
+            onConfirm={() => handleRestart(record.id)}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button
+              type="link"
+              size="small"
+              icon={<ReloadOutlined />}
+            >
+              重启
+            </Button>
+          </Popconfirm>
+          <Button
+            type="link"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/agents/${record.id}`)}
+          >
+            详情
+          </Button>
+        </Space>
       ),
     },
   ];
