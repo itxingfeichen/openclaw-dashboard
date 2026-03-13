@@ -13,6 +13,8 @@ const __dirname = path.dirname(__filename)
 // Import routes
 import healthRoutes from './routes/health.js'
 import cliRoutes from './routes/cli.js'
+import authRoutes from './routes/auth.js'
+import userRoutes from './routes/users.js'
 
 const app = express()
 const PORT = process.env.PORT || 8080
@@ -24,6 +26,8 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.use('/api/health', healthRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes)
 app.use('/api', cliRoutes)
 
 // Root endpoint
