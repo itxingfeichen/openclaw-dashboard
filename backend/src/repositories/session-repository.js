@@ -22,10 +22,14 @@ export function createSession(sessionData) {
     VALUES (?, ?, ?, ?, ?)
   `);
   
+  const expiresAt = sessionData.expiresAt instanceof Date 
+    ? sessionData.expiresAt.toISOString()
+    : sessionData.expiresAt;
+  
   const result = stmt.run(
     sessionData.userId,
     sessionData.token,
-    sessionData.expiresAt.toISOString(),
+    expiresAt,
     sessionData.ipAddress || null,
     sessionData.userAgent || null
   );
@@ -143,6 +147,15 @@ export function invalidateSessionByToken(token) {
 }
 
 /**
+ * Revoke session by token (alias for invalidateSessionByToken)
+ * @param {string} token - Session token
+ * @returns {boolean} Success status
+ */
+export function revokeSession(token) {
+  return invalidateSessionByToken(token);
+}
+
+/**
  * Invalidate all sessions for a user
  * @param {number} userId - User ID
  * @returns {number} Number of invalidated sessions
@@ -237,6 +250,7 @@ export default {
   updateSession,
   invalidateSession,
   invalidateSessionByToken,
+  revokeSession,
   invalidateAllUserSessions,
   deleteSession,
   deleteExpiredSessions,
