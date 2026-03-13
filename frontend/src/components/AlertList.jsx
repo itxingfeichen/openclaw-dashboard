@@ -140,7 +140,7 @@ const AlertList = ({ alerts = [], onDismiss, onViewDetail }) => {
   return (
     <Card
       title="告警列表"
-      bordered={false}
+      variant="borderless"
       style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginTop: '24px' }}
       extra={
         alerts.length > 0 ? (

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Card, Button, Space, Modal, message as antdMessage } from 'antd'
 import {
-  PlayCircleOutlined,
-  StopCircleOutlined,
+  PlayCircleFilled,
+  StopFilled,
   FileTextOutlined,
   PlusCircleOutlined,
   ReloadOutlined
@@ -70,14 +70,14 @@ const QuickActions = ({
   return (
     <Card
       title="快速操作"
-      bordered={false}
+      variant="borderless"
       style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginTop: '24px' }}
     >
       <Space size="middle" wrap>
         {!isAgentRunning ? (
           <Button
             type="primary"
-            icon={<PlayCircleOutlined />}
+            icon={<PlayCircleFilled />}
             size="large"
             onClick={handleStartAgent}
             loading={loading}
@@ -88,7 +88,7 @@ const QuickActions = ({
         ) : (
           <Button
             danger
-            icon={<StopCircleOutlined />}
+            icon={<StopFilled />}
             size="large"
             onClick={handleStopAgent}
             loading={loading}

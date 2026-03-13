@@ -4,7 +4,7 @@ import {
   CheckCircleOutlined,
   StopOutlined,
   RobotOutlined,
-  TaskOutlined,
+  CheckSquareOutlined,
   CommentOutlined
 } from '@ant-design/icons'
 
@@ -28,7 +28,7 @@ const StatCard = ({ title, value, type, status }) => {
       case 'agent':
         return <RobotOutlined style={{ color: '#1890ff', fontSize: '24px' }} />
       case 'task':
-        return <TaskOutlined style={{ color: '#722ed1', fontSize: '24px' }} />
+        return <CheckSquareOutlined style={{ color: '#722ed1', fontSize: '24px' }} />
       case 'session':
         return <CommentOutlined style={{ color: '#fa8c16', fontSize: '24px' }} />
       default:
@@ -51,7 +51,7 @@ const StatCard = ({ title, value, type, status }) => {
   }
 
   return (
-    <Card bordered={false} style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+    <Card variant="borderless" style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
       <Statistic
         title={title}
         value={getStatusText()}

@@ -35,7 +35,7 @@ const ResourceChart = ({ cpuData = [], memoryData = [] }) => {
   return (
     <Card
       title="资源使用率"
-      bordered={false}
+      variant="borderless"
       style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginTop: '24px' }}
     >
       <Row gutter={16}>

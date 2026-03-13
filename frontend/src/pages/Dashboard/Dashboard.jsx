@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Row, Col, Spin, Alert } from 'antd'
-import { RefreshOutlined } from '@ant-design/icons'
+import { ReloadOutlined } from '@ant-design/icons'
 import StatCard from '../../components/StatCard'
 import ResourceChart from '../../components/ResourceChart'
 import QuickActions from '../../components/QuickActions'
@@ -30,8 +30,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // API 基础 URL
-  const API_BASE_URL = process.env.REACT_APP_API_URL || '/api'
+  // API 基础 URL (Vite 使用 import.meta.env)
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
 
   /**
    * 获取系统健康状态
@@ -91,59 +91,15 @@ const Dashboard = () => {
   }, [API_BASE_URL])
 
   /**
-   * 获取监控指标
+   * 获取监控指标 (使用模拟数据，后端 /api/metrics 路由待实现)
    */
   const fetchMetrics = useCallback(async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/metrics`)
-      if (!response.ok) throw new Error('Failed to fetch metrics')
-      const data = await response.json()
-
-      // 处理 CPU 数据
-      if (data.cpu) {
-        const cpuHistory = Array.isArray(data.cpu.history)
-          ? data.cpu.history
-          : generateMockData('CPU')
-        setCpuData(cpuHistory)
-      } else {
-        setCpuData(generateMockData('CPU'))
-      }
-
-      // 处理内存数据
-      if (data.memory) {
-        const memoryHistory = Array.isArray(data.memory.history)
-          ? data.memory.history
-          : generateMockData('Memory')
-        setMemoryData(memoryHistory)
-      } else {
-        setMemoryData(generateMockData('Memory'))
-      }
-
-      // 处理告警
-      if (data.alerts) {
-        setAlerts(data.alerts)
-      } else {
-        setAlerts(generateMockAlerts())
-      }
-
-      // 更新任务数量
-      if (data.tasks) {
-        setSystemStatus((prev) => ({
-          ...prev,
-          taskCount: data.tasks.count || data.tasks.length || 0
-        }))
-      } else {
-        setSystemStatus((prev) => ({ ...prev, taskCount: 23 }))
-      }
-    } catch (err) {
-      console.error('Failed to fetch metrics:', err)
-      // 使用模拟数据用于演示
-      setCpuData(generateMockData('CPU'))
-      setMemoryData(generateMockData('Memory'))
-      setAlerts(generateMockAlerts())
-      setSystemStatus((prev) => ({ ...prev, taskCount: 23 }))
-    }
-  }, [API_BASE_URL])
+    // 使用模拟数据用于演示
+    setCpuData(generateMockData('CPU'))
+    setMemoryData(generateMockData('Memory'))
+    setAlerts(generateMockAlerts())
+    setSystemStatus((prev) => ({ ...prev, taskCount: 23 }))
+  }, [])
 
   /**
    * 生成模拟数据（用于演示）
@@ -295,7 +251,7 @@ const Dashboard = () => {
   if (loading && systemStatus.agentCount === 0) {
     return (
       <div className="dashboard-loading">
-        <Spin size="large" tip="加载仪表盘数据..." />
+        <Spin size="large" tip="加载仪表盘数据..." fullscreen />
       </div>
     )
   }
@@ -372,7 +328,7 @@ const Dashboard = () => {
           disabled={loading}
           title="刷新数据"
         >
-          <RefreshOutlined spin={loading} /> 刷新
+          <ReloadOutlined spin={loading} /> 刷新
         </button>
       </div>
     </div>

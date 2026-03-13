@@ -1,9 +1,9 @@
-import { ConfigProvider, Layout, theme, Menu } from 'antd'
+import { Layout, Menu } from 'antd'
 import { useState } from 'react'
 import {
   DashboardOutlined,
   RobotOutlined,
-  TaskOutlined,
+  CheckSquareOutlined,
   SettingOutlined
 } from '@ant-design/icons'
 import Dashboard from './pages/Dashboard/Dashboard'
@@ -11,7 +11,6 @@ import Dashboard from './pages/Dashboard/Dashboard'
 const { Header, Content, Footer, Sider } = Layout
 
 function App() {
-  const [api, contextHolder] = theme.useToken()
   const [collapsed, setCollapsed] = useState(false)
   const [current, setCurrent] = useState('dashboard')
 
@@ -28,7 +27,7 @@ function App() {
     },
     {
       key: 'tasks',
-      icon: <TaskOutlined />,
+      icon: <CheckSquareOutlined />,
       label: '任务管理'
     },
     {
@@ -69,9 +68,7 @@ function App() {
   }
 
   return (
-    <ConfigProvider>
-      {contextHolder}
-      <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
           <div
             style={{
@@ -121,7 +118,6 @@ function App() {
           </Footer>
         </Layout>
       </Layout>
-    </ConfigProvider>
   )
 }
 
