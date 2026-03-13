@@ -7,9 +7,9 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "test": "node --test",
-    "test:coverage": "node --test --experimental-test-coverage",
-    "test:watch": "node --test --watch"
+    "test": "DB_PATH=./data/test-openclaw.db node --test",
+    "test:coverage": "DB_PATH=./data/test-openclaw.db node --test --experimental-test-coverage",
+    "test:watch": "DB_PATH=./data/test-openclaw.db node --test --watch"
   },
   "dependencies": {
     "express": "^4.18.2",
