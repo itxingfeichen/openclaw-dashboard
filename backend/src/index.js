@@ -18,12 +18,17 @@ import agentCreateRoutes from './routes/agent-create.js'
 import logRoutes from './routes/logs.js'
 import taskRoutes from './routes/tasks.js'
 import configEditorRoutes from './routes/config-editor.js'
+import configHistoryRoutes from './routes/config-history.js'
+import logStreamRoutes from './routes/log-stream.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
 import { createMetricsMiddleware } from './metrics/middleware.js'
 import { logInfo, logRequest } from './utils/logger.js'
 import { getPerformanceMonitor } from './utils/performance-monitor.js'
+
+// Import WebSocket service
+import { initializeWebSocketServer, closeWebSocketServer } from './services/websocketService.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -71,6 +76,7 @@ app.use('/api/agents', agentCreateRoutes)
 app.use('/api/logs', logRoutes)
 app.use('/api/tasks', taskRoutes)
 app.use('/api/config', configEditorRoutes)
+app.use('/api/config', configHistoryRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {

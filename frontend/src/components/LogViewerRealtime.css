@@ -1,0 +1,263 @@
+.log-viewer-realtime {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e1e;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Control Bar */
+.log-viewer-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #252526;
+  border-bottom: 1px solid #333;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Connection Indicator */
+.connection-indicator {
+  font-size: 16px;
+  padding: 4px;
+}
+
+.connection-indicator.connected {
+  color: #52c41a;
+}
+
+.connection-indicator.connecting {
+  color: #1890ff;
+}
+
+.connection-indicator.disconnected {
+  color: #ff4d4f;
+}
+
+/* Level Filter Select */
+.log-level-filter {
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid #434343;
+  border-radius: 2px;
+  background: #2f2f2f;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.log-level-filter:hover {
+  border-color: #1890ff;
+}
+
+/* Log Stats */
+.log-stats {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Log Container */
+.log-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #1e1e1e;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.log-container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.log-container::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.log-container::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 5px;
+}
+
+.log-container::-webkit-scrollbar-thumb:hover {
+  background: #525252;
+}
+
+/* Log Content */
+.log-content {
+  position: relative;
+  width: 100%;
+}
+
+.log-viewport {
+  width: 100%;
+}
+
+/* Log Row */
+.log-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 4px 12px;
+  border-bottom: 1px solid #2a2a2a;
+  height: 28px;
+  gap: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.log-row:hover {
+  background: #2a2a2a;
+}
+
+.log-row:last-child {
+  border-bottom: none;
+}
+
+/* Log Row Elements */
+.log-timestamp {
+  flex-shrink: 0;
+  width: 160px;
+  color: #858585;
+  font-size: 12px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log-level {
+  flex-shrink: 0;
+  width: 70px;
+}
+
+.log-level-tag {
+  margin: 0;
+  padding: 0 6px;
+  font-size: 11px;
+  line-height: 18px;
+  height: 18px;
+  border-radius: 2px;
+}
+
+.log-source {
+  flex-shrink: 0;
+  width: 120px;
+  font-size: 12px;
+  color: #b0b0b0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log-message {
+  flex: 1;
+  color: #d4d4d4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Log Level Colors */
+.log-level-info .log-message {
+  color: #4da6ff;
+}
+
+.log-level-warning .log-message {
+  color: #ffa500;
+}
+
+.log-level-error .log-message {
+  color: #ff6b6b;
+  font-weight: 500;
+}
+
+.log-level-debug .log-message {
+  color: #6bcb77;
+}
+
+.log-level-trace .log-message {
+  color: #b185db;
+}
+
+/* Highlight */
+.log-row .highlight {
+  background: #ffff0033;
+  color: #ffff00;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Pause Indicator */
+.pause-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(37, 37, 38, 0.95);
+  border: 1px solid #434343;
+  border-radius: 4px;
+  padding: 8px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.pause-indicator .ant-typography {
+  color: #fff;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .log-viewer-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .control-group {
+    justify-content: space-between;
+  }
+
+  .log-timestamp {
+    width: 120px;
+  }
+
+  .log-source {
+    width: 80px;
+  }
+
+  .log-level {
+    width: 60px;
+  }
+}
+
+/* Loading State */
+.log-viewer-realtime.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Empty State */
+.log-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  gap: 12px;
+}
+
+.log-empty-state .ant-empty-description {
+  color: #888;
+}

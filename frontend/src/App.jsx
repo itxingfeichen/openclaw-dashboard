@@ -6,7 +6,8 @@ import {
   CheckSquareOutlined,
   SettingOutlined,
   FileTextOutlined,
-  PlusOutlined
+  PlusOutlined,
+  WifiOutlined
 } from '@ant-design/icons'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Dashboard from './pages/Dashboard/Dashboard'
@@ -14,7 +15,9 @@ import AgentsPage from './pages/Agents/AgentsPage'
 import AgentCreate from './pages/AgentCreate/AgentCreate'
 import AgentCreateWizard from './pages/AgentCreateWizard/AgentCreateWizard'
 import Logs from './pages/Logs/Logs'
+import LogStream from './pages/LogStream/LogStream'
 import TasksPage from './pages/Tasks/Tasks'
+import ConfigHistory from './pages/ConfigHistory/ConfigHistory'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -40,9 +43,19 @@ function App() {
       label: '日志查看'
     },
     {
+      key: 'logstream',
+      icon: <WifiOutlined />,
+      label: '实时日志流'
+    },
+    {
       key: 'tasks',
       icon: <CheckSquareOutlined />,
       label: '任务管理'
+    },
+    {
+      key: 'config-history',
+      icon: <FileTextOutlined />,
+      label: '配置历史'
     },
     {
       key: 'settings',
@@ -68,6 +81,7 @@ function App() {
         <Route path="/agents/create" element={<AgentCreate />} />
         <Route path="/agents/create-wizard" element={<AgentCreateWizard />} />
         <Route path="/logs" element={<Logs />} />
+        <Route path="/logstream" element={<LogStream />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route 
           path="/settings" 
