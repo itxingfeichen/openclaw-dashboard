@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Tag, Space, Typography, Badge, Button, message, Tooltip } from 'antd';
 import { DownloadOutlined, CheckCircleOutlined, StarOutlined, FireOutlined } from '@ant-design/icons';
 import { CATEGORY_LABELS, SOURCE_LABELS, installSkill, uninstallSkill, updateSkill } from '../services/skillService';
 import { useNavigate } from 'react-router-dom';
+import SkillInstall from './SkillInstall';
+import SkillUpdate from './SkillUpdate';
 
 const { Text, Paragraph } = Typography;
 
@@ -12,6 +14,8 @@ const { Text, Paragraph } = Typography;
  */
 const SkillCard = ({ skill, onInstallChange }) => {
   const navigate = useNavigate();
+  const [installModalVisible, setInstallModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
 
   const handleClick = () => {
     navigate(`/skills/${skill.id}`);
@@ -20,17 +24,19 @@ const SkillCard = ({ skill, onInstallChange }) => {
   /**
    * Handle skill install
    */
-  const handleInstall = async (e) => {
+  const handleInstall = (e) => {
     e.stopPropagation();
-    try {
-      const result = await installSkill(skill.id, skill.source);
-      if (result.success) {
-        message.success(`技能 ${skill.displayName} 安装成功`);
-        if (onInstallChange) onInstallChange(skill.id, true);
-      }
-    } catch (error) {
-      message.error(`安装失败：${error.message}`);
+    setInstallModalVisible(true);
+  };
+
+  /**
+   * Handle install complete
+   */
+  const handleInstallComplete = (skillId, installed) => {
+    if (onInstallChange) {
+      onInstallChange(skillId, installed);
     }
+    setInstallModalVisible(false);
   };
 
   /**
@@ -52,17 +58,19 @@ const SkillCard = ({ skill, onInstallChange }) => {
   /**
    * Handle skill update
    */
-  const handleUpdate = async (e) => {
+  const handleUpdate = (e) => {
     e.stopPropagation();
-    try {
-      const result = await updateSkill(skill.id);
-      if (result.success) {
-        message.success(`技能 ${skill.displayName} 更新成功`);
-        if (onInstallChange) onInstallChange(skill.id, true);
-      }
-    } catch (error) {
-      message.error(`更新失败：${error.message}`);
+    setUpdateModalVisible(true);
+  };
+
+  /**
+   * Handle update complete
+   */
+  const handleUpdateComplete = (skillIds) => {
+    if (onInstallChange) {
+      skillIds.forEach(id => onInstallChange(id, true));
     }
+    setUpdateModalVisible(false);
   };
 
   const formatDate = (dateString) => {
@@ -227,6 +235,22 @@ const SkillCard = ({ skill, onInstallChange }) => {
             </Space>
           </div>
         }
+      />
+      
+      {/* Skill Install Modal */}
+      <SkillInstall
+        skill={skill}
+        visible={installModalVisible}
+        onClose={() => setInstallModalVisible(false)}
+        onInstallComplete={handleInstallComplete}
+      />
+
+      {/* Skill Update Modal */}
+      <SkillUpdate
+        skills={skill}
+        visible={updateModalVisible}
+        onClose={() => setUpdateModalVisible(false)}
+        onUpdateComplete={handleUpdateComplete}
       />
     </Card>
   );

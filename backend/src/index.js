@@ -20,6 +20,7 @@ import taskRoutes from './routes/tasks.js'
 import configEditorRoutes from './routes/config-editor.js'
 import configHistoryRoutes from './routes/config-history.js'
 import logStreamRoutes from './routes/log-stream.js'
+import skillInstallRoutes from './routes/skill-install.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -77,6 +78,7 @@ app.use('/api/logs', logRoutes)
 app.use('/api/tasks', taskRoutes)
 app.use('/api/config', configEditorRoutes)
 app.use('/api/config', configHistoryRoutes)
+app.use('/api/skills', skillInstallRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {

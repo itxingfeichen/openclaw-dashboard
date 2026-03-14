@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, Descriptions, Tag, Space, Typography, Button, Rate, Statistic, Row, Col, Divider, Alert } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Descriptions, Tag, Space, Typography, Button, Rate, Statistic, Row, Col, Divider, Alert, Badge } from 'antd';
 import { 
   DownloadOutlined, 
   CheckCircleOutlined, 
@@ -13,6 +13,8 @@ import {
   SafetyCertificateOutlined
 } from '@ant-design/icons';
 import { CATEGORY_LABELS, SOURCE_LABELS, installSkill, uninstallSkill, updateSkill } from '../services/skillService';
+import SkillInstall from './SkillInstall';
+import SkillUpdate from './SkillUpdate';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -21,20 +23,26 @@ const { Title, Text, Paragraph } = Typography;
  * Displays detailed skill information in a modal
  */
 const SkillDetail = ({ skill, visible, onClose, onInstallChange }) => {
+  const [installModalVisible, setInstallModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
+
   if (!skill) return null;
 
   /**
    * Handle skill install
    */
-  const handleInstall = async () => {
-    try {
-      const result = await installSkill(skill.id, skill.source);
-      if (result.success) {
-        onInstallChange(skill.id, true);
-      }
-    } catch (error) {
-      console.error('Install failed:', error);
+  const handleInstall = () => {
+    setInstallModalVisible(true);
+  };
+
+  /**
+   * Handle install complete
+   */
+  const handleInstallComplete = (skillId, installed) => {
+    if (onInstallChange) {
+      onInstallChange(skillId, installed);
     }
+    setInstallModalVisible(false);
   };
 
   /**
@@ -54,15 +62,18 @@ const SkillDetail = ({ skill, visible, onClose, onInstallChange }) => {
   /**
    * Handle skill update
    */
-  const handleUpdate = async () => {
-    try {
-      const result = await updateSkill(skill.id);
-      if (result.success) {
-        onInstallChange(skill.id, true);
-      }
-    } catch (error) {
-      console.error('Update failed:', error);
+  const handleUpdate = () => {
+    setUpdateModalVisible(true);
+  };
+
+  /**
+   * Handle update complete
+   */
+  const handleUpdateComplete = (skillIds) => {
+    if (onInstallChange) {
+      skillIds.forEach(id => onInstallChange(id, true));
     }
+    setUpdateModalVisible(false);
   };
 
   const getCategoryColor = (category) => {
@@ -148,6 +159,21 @@ const SkillDetail = ({ skill, visible, onClose, onInstallChange }) => {
         </Space>
       }
     >
+      {/* Skill Install Modal */}
+      <SkillInstall
+        skill={skill}
+        visible={installModalVisible}
+        onClose={() => setInstallModalVisible(false)}
+        onInstallComplete={handleInstallComplete}
+      />
+
+      {/* Skill Update Modal */}
+      <SkillUpdate
+        skills={skill}
+        visible={updateModalVisible}
+        onClose={() => setUpdateModalVisible(false)}
+        onUpdateComplete={handleUpdateComplete}
+      />
       <div style={{ marginBottom: 24 }}>
         <Paragraph style={{ fontSize: 16, lineHeight: 1.8 }}>
           {skill.description}
