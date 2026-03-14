@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Tag, Space, Typography, Badge, Button, message, Popconfirm } from 'antd';
-import { ClockOutlined, IdcardOutlined, PlayCircleOutlined, StopOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined, IdcardOutlined, PlayCircleOutlined, StopOutlined, ReloadOutlined } from '@ant-design/icons';
 import { getStatusColor, startAgent, stopAgent, restartAgent } from '../services/agentService';
 import { useNavigate } from 'react-router-dom';
 
@@ -120,7 +120,7 @@ const AgentCard = ({ agent, onRefresh }) => {
               </Space>
               
               <Space>
-                <ClockOutlined />
+                <ClockCircleOutlined />
                 <Text type="secondary" style={{ fontSize: 12 }}>
                   创建于 {formatDate(agent.createdAt)}
                 </Text>

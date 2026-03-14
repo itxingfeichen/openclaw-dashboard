@@ -2,11 +2,16 @@
   "name": "openclaw-dashboard-backend",
   "version": "0.1.0",
   "description": "OpenClaw Dashboard Backend API",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/index.js",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.js",
+    "build": "tsc",
+    "lint": "eslint src --fix",
+    "lint:check": "eslint src",
+    "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\"",
     "test": "DB_PATH=./data/test-openclaw.db node --test",
     "test:coverage": "DB_PATH=./data/test-openclaw.db node --test --experimental-test-coverage",
     "test:watch": "DB_PATH=./data/test-openclaw.db node --test --watch"
@@ -20,6 +25,22 @@
     "prom-client": "^15.1.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
-  }
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": ["openclaw", "dashboard", "api"],
+  "author": "",
+  "license": "ISC"
 }

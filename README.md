@@ -1,195 +1,150 @@
 # OpenClaw Dashboard
 
-A full-stack dashboard application built with React + TypeScript (frontend) and Node.js + Express (backend).
+OpenClaw Dashboard 是一个全栈 Web 应用程序，提供现代化的用户界面和强大的后端 API 服务。
 
-## 📁 Project Structure
+## 📁 项目结构
 
 ```
 openclaw-dashboard/
-├── frontend/          # React + TypeScript + Vite frontend
-│   ├── src/
-│   │   ├── components/  # Reusable UI components
-│   │   ├── pages/       # Page components
-│   │   ├── hooks/       # Custom React hooks
-│   │   ├── App.tsx      # Main application component
-│   │   └── main.tsx     # Entry point
-│   ├── public/          # Static assets
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── tsconfig.json
-│   ├── .eslintrc.cjs
-│   └── .prettierrc
-├── backend/           # Node.js + Express backend
-│   ├── src/
-│   │   ├── routes/      # API route handlers
-│   │   │   ├── cli.js   # CLI adapter routes
-│   │   │   └── health.js # Health check routes
-│   │   ├── middleware/  # Express middleware
-│   │   ├── cli-adapter/ # CLI command wrapper
-│   │   │   ├── index.js     # Module entry
-│   │   │   ├── executor.js  # Command executor
-│   │   │   ├── commands.js  # CLI commands wrapper
-│   │   │   ├── schema.js    # Output validation
-│   │   │   ├── parsers.js   # Text output parsers
-│   │   │   └── README.md    # Documentation
-│   │   └── index.js     # Server entry point
-│   ├── tests/         # Unit tests
-│   ├── package.json
-│   └── .env
-└── README.md
+├── frontend/           # React + TypeScript + Vite 前端
+│   ├── src/           # 源代码
+│   ├── public/        # 静态资源
+│   ├── package.json   # 前端依赖配置
+│   └── vite.config.ts # Vite 构建配置
+├── backend/           # Node.js + Express + TypeScript 后端
+│   ├── src/           # 源代码
+│   ├── tests/         # 测试文件
+│   ├── data/          # 数据库文件
+│   └── package.json   # 后端依赖配置
+├── package.json       # 根项目配置
+├── Makefile           # 常用命令快捷方式
+├── .editorconfig      # 编辑器配置
+├── .prettierrc        # 代码格式化配置
+└── README.md          # 项目说明文档
 ```
 
-## 🚀 Quick Start
+## 🛠 技术栈
 
-### Prerequisites
+### 前端
+- **框架**: React 19
+- **语言**: TypeScript 5.9
+- **构建工具**: Vite 8
+- **代码规范**: ESLint 9 + Prettier 3
 
-- Node.js >= 18.x
-- npm >= 9.x
+### 后端
+- **框架**: Express 4
+- **语言**: TypeScript 5.3
+- **运行时**: Node.js 18+
+- **代码规范**: ESLint 8 + Prettier 3
 
-### Backend Setup
+## 🚀 快速开始
+
+### 环境要求
+- Node.js >= 18.0.0
+- npm >= 9.0.0
+
+### 安装依赖
 
 ```bash
-cd backend
+# 使用 Make
+make install
+
+# 或手动安装
 npm install
-npm start
+npm install --prefix frontend
+npm install --prefix backend
 ```
 
-The backend server will start on **http://localhost:8080**
-
-**API Endpoints:**
-
-**Health:**
-- `GET /` - API info
-- `GET /api/health` - Health check endpoint
-- `GET /api/health/ready` - Readiness check endpoint
-
-**CLI Adapter (OpenClaw Integration):**
-- `GET /api/status` - Get system status
-- `GET /api/agents` - Get Agent list
-- `GET /api/sessions` - Get session list
-- `GET /api/cron` - Get cron job list
-- `GET /api/config` - Get configuration (optional `?key=` parameter)
-
-### Frontend Setup
+### 开发模式
 
 ```bash
-cd frontend
-npm install
-npm run dev
+# 同时启动前后端开发服务器
+make dev
+
+# 或分别启动
+make dev-fe  # 仅前端 (http://localhost:8080)
+make dev-be  # 仅后端 (http://localhost:3000)
 ```
 
-The frontend dev server will start on **http://localhost:3000**
+### 构建生产版本
 
-## 🛠️ Development Commands
-
-### Frontend
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format code with Prettier |
-| `npm run preview` | Preview production build |
-
-### Backend
-
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start production server |
-| `npm run dev` | Start development server with auto-reload |
-| `npm test` | Run unit tests |
-| `npm run test:coverage` | Run tests with coverage report |
-| `npm run test:watch` | Run tests in watch mode |
-
-## 🔌 CLI Adapter
-
-The CLI Adapter module provides a stable API layer for interacting with OpenClaw CLI commands.
-
-### Features
-
-- **Command Execution**: Wraps `child_process.exec` with timeout control and retry logic
-- **Output Parsing**: Parses CLI text output into structured JSON
-- **Schema Validation**: Validates CLI output format
-- **Error Handling**: Graceful error handling with friendly messages
-
-### Usage Example
-
-```javascript
-import {
-  getStatus,
-  getAgentsList,
-  getSessionsList,
-} from './backend/src/cli-adapter/index.js'
-
-// Get system status
-const status = await getStatus()
-
-// Get agents list
-const agents = await getAgentsList()
-console.log(`Found ${agents.count} agents`)
+```bash
+make build
 ```
 
-### API Response Format
+### 代码质量检查
 
-All CLI adapter endpoints return a consistent format:
+```bash
+# 运行代码检查
+make lint
 
-```json
-{
-  "success": true,
-  "data": { ... },
-  "timestamp": "2026-03-13T00:00:00.000Z"
-}
+# 格式化代码
+make format
 ```
 
-For detailed documentation, see [`backend/src/cli-adapter/README.md`](backend/src/cli-adapter/README.md).
+### 运行测试
 
-## 🔧 Configuration
-
-### Backend Environment Variables
-
-Edit `backend/.env`:
-
-```env
-PORT=8080
-JWT_SECRET=your-secret-key-change-in-production
-NODE_ENV=development
+```bash
+make test
 ```
 
-### Frontend Proxy
+### 清理项目
 
-The frontend is configured to proxy `/api` requests to the backend server (localhost:8080) during development. See `frontend/vite.config.ts`.
+```bash
+make clean
+```
 
-## 📦 Dependencies
+## 📜 开发规范
 
-### Frontend
+### 代码风格
+- 使用 2 个空格缩进
+- 使用单引号
+- 行尾不加分号（TypeScript 文件除外）
+- 最大行宽 100 字符
 
-- **React 18** - UI library
-- **Ant Design 5** - UI component library
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **ESLint + Prettier** - Code quality
+### Git 提交规范
+```
+feat: 新功能
+fix: 修复 bug
+docs: 文档更新
+style: 代码格式调整
+refactor: 代码重构
+test: 测试相关
+chore: 构建/工具链相关
+```
 
-### Backend
+## 🔧 配置文件说明
 
-- **Express** - Web framework
-- **jsonwebtoken** - JWT authentication
-- **better-sqlite3** - SQLite database
-- **cors** - Cross-origin resource sharing
-- **dotenv** - Environment variables
+| 文件 | 说明 |
+|------|------|
+| `.editorconfig` | 编辑器统一配置 |
+| `.prettierrc` | Prettier 格式化规则 |
+| `.prettierignore` | Prettier 忽略文件 |
+| `Makefile` | 常用命令快捷方式 |
+| `package.json` | 项目依赖和脚本 |
 
-## 🌐 Access URLs
+## 📝 常用命令
 
-| Service | URL |
-|---------|-----|
-| Frontend (Dev) | http://localhost:3000 |
-| Backend API | http://localhost:8080 |
-| Health Check | http://localhost:8080/api/health |
+| 命令 | 说明 |
+|------|------|
+| `npm run dev` | 启动开发服务器 |
+| `npm run build` | 构建生产版本 |
+| `npm run lint` | 代码检查 |
+| `npm run format` | 代码格式化 |
+| `npm run test` | 运行测试 |
 
-## 📝 License
+## 🤝 贡献指南
 
-MIT
+1. Fork 项目
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'feat: Add AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 提交 Pull Request
+
+## 📄 许可证
+
+ISC License
 
 ---
 
-_Built with OpenClaw_
+**Happy Coding!** 🎉

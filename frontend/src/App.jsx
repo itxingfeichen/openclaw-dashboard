@@ -4,10 +4,12 @@ import {
   DashboardOutlined,
   RobotOutlined,
   CheckSquareOutlined,
-  SettingOutlined
+  SettingOutlined,
+  FileTextOutlined
 } from '@ant-design/icons'
 import Dashboard from './pages/Dashboard/Dashboard'
 import AgentsPage from './pages/Agents/AgentsPage'
+import Logs from './pages/Logs/Logs'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -27,6 +29,11 @@ function App() {
       label: 'Agent 管理'
     },
     {
+      key: 'logs',
+      icon: <FileTextOutlined />,
+      label: '日志查看'
+    },
+    {
       key: 'tasks',
       icon: <CheckSquareOutlined />,
       label: '任务管理'
@@ -44,6 +51,8 @@ function App() {
         return <Dashboard />
       case 'agents':
         return <AgentsPage />
+      case 'logs':
+        return <Logs />
       case 'tasks':
         return (
           <div style={{ padding: '24px' }}>

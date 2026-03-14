@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename)
 import healthRoutes from './routes/health.js'
 import cliRoutes from './routes/cli.js'
 import agentControlRoutes from './routes/agents.js'
+import logRoutes from './routes/logs.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -22,7 +23,7 @@ import { logInfo, logRequest } from './utils/logger.js'
 import { getPerformanceMonitor } from './utils/performance-monitor.js'
 
 const app = express()
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 3000
 
 // Initialize performance monitor
 const performanceMonitor = getPerformanceMonitor({
@@ -63,6 +64,7 @@ app.use((req, res, next) => {
 app.use('/api/health', healthRoutes)
 app.use('/api', cliRoutes)
 app.use('/api/agents', agentControlRoutes)
+app.use('/api/logs', logRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {
@@ -72,6 +74,7 @@ app.get('/', asyncHandler(async (req, res) => {
     status: 'running',
     healthCheck: '/api/health',
     metrics: '/api/health/metrics',
+    logs: '/api/logs',
   })
 }))
 
