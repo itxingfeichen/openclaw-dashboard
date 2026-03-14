@@ -24,6 +24,7 @@ import skillInstallRoutes from './routes/skill-install.js'
 import metricsRoutes from './routes/metrics.js'
 import alertRoutes from './routes/alerts.js'
 import backupRoutes from './routes/backup.js'
+import exportRoutes from './routes/export.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -85,6 +86,7 @@ app.use('/api/skills', skillInstallRoutes)
 app.use('/api/metrics', metricsRoutes)
 app.use('/api/alerts', alertRoutes)
 app.use('/api/backup', backupRoutes)
+app.use('/api/export', exportRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {
@@ -96,6 +98,7 @@ app.get('/', asyncHandler(async (req, res) => {
     prometheusMetrics: '/api/health/metrics',
     systemMetrics: '/api/metrics',
     logs: '/api/logs',
+    export: '/api/export',
   })
 }))
 

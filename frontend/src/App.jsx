@@ -22,6 +22,7 @@ import TasksPage from './pages/Tasks/Tasks'
 import ConfigHistory from './pages/ConfigHistory/ConfigHistory'
 import Alerts from './pages/Alerts/Alerts'
 import BackupPage from './pages/Backup/Backup'
+import ExportPage from './pages/Export/Export'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -72,6 +73,11 @@ function App() {
       label: '备份管理'
     },
     {
+      key: 'export',
+      icon: <FileTextOutlined />,
+      label: '数据导出'
+    },
+    {
       key: 'settings',
       icon: <SettingOutlined />,
       label: '系统设置'
@@ -99,6 +105,7 @@ function App() {
         <Route path="/logs" element={<Logs />} />
         <Route path="/logstream" element={<LogStream />} />
         <Route path="/backups" element={<BackupPage />} />
+        <Route path="/export" element={<ExportPage />} />
         <Route 
           path="/settings" 
           element={
