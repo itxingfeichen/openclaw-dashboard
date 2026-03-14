@@ -14,9 +14,15 @@
     "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\"",
     "test": "DB_PATH=./data/test-openclaw.db node --test",
     "test:coverage": "DB_PATH=./data/test-openclaw.db node --test --experimental-test-coverage",
-    "test:watch": "DB_PATH=./data/test-openclaw.db node --test --watch"
+    "test:watch": "DB_PATH=./data/test-openclaw.db node --test --watch",
+    "db:migrate": "node scripts/db-migrate.js migrate",
+    "db:rollback": "node scripts/db-migrate.js rollback",
+    "db:status": "node scripts/db-migrate.js status",
+    "db:reset": "node scripts/db-migrate.js reset",
+    "db:seed": "node scripts/seed-database.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "better-sqlite3": "^9.2.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -40,7 +46,11 @@
   "directories": {
     "test": "tests"
   },
-  "keywords": ["openclaw", "dashboard", "api"],
+  "keywords": [
+    "openclaw",
+    "dashboard",
+    "api"
+  ],
   "author": "",
   "license": "ISC"
 }
