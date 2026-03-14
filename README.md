@@ -10,16 +10,21 @@ openclaw-dashboard/
 │   ├── src/           # 源代码
 │   ├── public/        # 静态资源
 │   ├── package.json   # 前端依赖配置
-│   └── vite.config.ts # Vite 构建配置
+│   ├── vite.config.ts # Vite 构建配置
+│   ├── tsconfig.json  # TypeScript 配置
+│   └── eslint.config.js # ESLint 配置
 ├── backend/           # Node.js + Express + TypeScript 后端
 │   ├── src/           # 源代码
 │   ├── tests/         # 测试文件
 │   ├── data/          # 数据库文件
-│   └── package.json   # 后端依赖配置
+│   ├── package.json   # 后端依赖配置
+│   └── tsconfig.json  # TypeScript 配置
+├── .husky/            # Git hooks 配置
 ├── package.json       # 根项目配置
 ├── Makefile           # 常用命令快捷方式
 ├── .editorconfig      # 编辑器配置
 ├── .prettierrc        # 代码格式化配置
+├── .prettierignore    # Prettier 忽略文件
 └── README.md          # 项目说明文档
 ```
 
@@ -36,6 +41,10 @@ openclaw-dashboard/
 - **语言**: TypeScript 5.3
 - **运行时**: Node.js 18+
 - **代码规范**: ESLint 8 + Prettier 3
+
+### Git Hooks
+- **工具**: Husky 9
+- **预提交检查**: ESLint + Prettier
 
 ## 🚀 快速开始
 
@@ -132,6 +141,18 @@ chore: 构建/工具链相关
 | `npm run lint` | 代码检查 |
 | `npm run format` | 代码格式化 |
 | `npm run test` | 运行测试 |
+
+## 🔒 Git Hooks
+
+项目使用 Husky 配置了 Git hooks，在提交前自动执行代码质量检查：
+
+- **pre-commit**: 自动运行 ESLint 代码检查和 Prettier 格式检查
+- 如果检查失败，提交将被阻止，请修复问题后重新提交
+
+```bash
+# Git commit 时自动触发
+git commit -m "feat: your message"
+```
 
 ## 🤝 贡献指南
 
