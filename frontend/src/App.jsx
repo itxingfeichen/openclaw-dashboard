@@ -12,6 +12,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Dashboard from './pages/Dashboard/Dashboard'
 import AgentsPage from './pages/Agents/AgentsPage'
 import AgentCreate from './pages/AgentCreate/AgentCreate'
+import AgentCreateWizard from './pages/AgentCreateWizard/AgentCreateWizard'
 import Logs from './pages/Logs/Logs'
 import TasksPage from './pages/Tasks/Tasks'
 
@@ -65,6 +66,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/agents" element={<AgentsPage />} />
         <Route path="/agents/create" element={<AgentCreate />} />
+        <Route path="/agents/create-wizard" element={<AgentCreateWizard />} />
         <Route path="/logs" element={<Logs />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route 
@@ -124,9 +126,9 @@ function App() {
                 <Button 
                   type="primary" 
                   icon={<PlusOutlined />}
-                  onClick={() => navigate('/agents/create')}
+                  onClick={() => navigate('/agents/create-wizard')}
                 >
-                  新建 Agent
+                  新建 Agent (向导模式)
                 </Button>
               )}
               <div style={{ fontSize: '14px', color: '#666' }}>

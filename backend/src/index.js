@@ -17,6 +17,7 @@ import agentControlRoutes from './routes/agents.js'
 import agentCreateRoutes from './routes/agent-create.js'
 import logRoutes from './routes/logs.js'
 import taskRoutes from './routes/tasks.js'
+import configEditorRoutes from './routes/config-editor.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -69,6 +70,7 @@ app.use('/api/agents', agentControlRoutes)
 app.use('/api/agents', agentCreateRoutes)
 app.use('/api/logs', logRoutes)
 app.use('/api/tasks', taskRoutes)
+app.use('/api/config', configEditorRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {

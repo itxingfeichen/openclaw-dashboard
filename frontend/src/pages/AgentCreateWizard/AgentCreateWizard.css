@@ -1,0 +1,494 @@
+/**
+ * AgentCreateWizard Page Styles
+ */
+
+.agent-create-wizard-page {
+  padding: 24px;
+  min-height: 100%;
+  background: #f5f7fa;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.header-title .ant-typography {
+  line-height: 1.5;
+}
+
+/* Wizard Card */
+.wizard-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03),
+              0 1px 6px -1px rgba(0, 0, 0, 0.02),
+              0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+.wizard-card .ant-card-body {
+  padding: 24px;
+}
+
+/* Wizard Steps Container */
+.wizard-steps-container {
+  margin-bottom: 24px;
+}
+
+.wizard-steps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #f5f7fa;
+  border-radius: 6px;
+}
+
+.wizard-steps .ant-steps-item-title {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.wizard-steps .ant-steps-item-description {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* Custom Step Dots */
+.wizard-step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.wizard-step-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #d9d9d9;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.wizard-step-dot:hover:not(:disabled) {
+  border-color: #1890ff;
+  background: #e6f7ff;
+}
+
+.wizard-step-dot.active {
+  border-color: #1890ff;
+  background: #e6f7ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.2);
+}
+
+.wizard-step-dot.completed {
+  border-color: #52c41a;
+  background: #52c41a;
+  color: #fff;
+}
+
+.wizard-step-dot:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.wizard-step-dot .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  transition: all 0.3s ease;
+}
+
+.wizard-step-dot.active .dot {
+  background: #1890ff;
+}
+
+.wizard-step-dot.completed .dot {
+  background: #fff;
+}
+
+.wizard-step-dot .check-icon {
+  position: absolute;
+  font-size: 20px;
+  color: #fff;
+}
+
+/* Wizard Content */
+.wizard-content {
+  min-height: 400px;
+  padding: 24px 0;
+}
+
+.wizard-step-content {
+  animation: fadeIn 0.4s ease;
+}
+
+.wizard-step-content h4 {
+  margin-bottom: 8px;
+}
+
+.wizard-step-content .ant-divider {
+  margin: 16px 0;
+}
+
+.preview-step .ant-descriptions-bordered .ant-descriptions-item-label {
+  font-weight: 500;
+  width: 140px;
+}
+
+.preview-step .ant-card {
+  background: linear-gradient(135deg, #fafafa 0%, #fff 100%);
+}
+
+/* Wizard Navigation */
+.wizard-navigation {
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.wizard-navigation .ant-btn-lg {
+  padding: 8px 24px;
+  font-size: 15px;
+}
+
+/* Creation Progress */
+.creation-progress {
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #fff 100%);
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.creation-progress .ant-steps-item-title {
+  font-size: 12px;
+}
+
+.creation-progress .ant-progress {
+  margin-top: 16px;
+}
+
+/* Success State */
+.success-state {
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Wizard Sidebar */
+.wizard-sidebar {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03),
+              0 1px 6px -1px rgba(0, 0, 0, 0.02),
+              0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+.wizard-sidebar .ant-card-head {
+  background: #fafafa;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.wizard-sidebar .ant-card-body {
+  padding: 16px;
+}
+
+.sidebar-tips ul {
+  list-style-type: disc;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.sidebar-tips li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+/* Form Styles */
+.wizard-card .ant-form-item {
+  margin-bottom: 20px;
+}
+
+.wizard-card .ant-form-item-label > label {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.wizard-card .ant-input,
+.wizard-card .ant-select,
+.wizard-card .ant-input-textarea {
+  transition: all 0.3s ease;
+}
+
+.wizard-card .ant-input:hover,
+.wizard-card .ant-select:hover {
+  border-color: #40a9ff;
+}
+
+.wizard-card .ant-input:focus,
+.wizard-card .ant-select-focused {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.wizard-card .ant-input-lg,
+.wizard-card .ant-select-lg {
+  font-size: 15px;
+}
+
+/* Tool Permission Config Styles */
+.tool-permission-config {
+  padding: 8px 0;
+}
+
+.tool-item {
+  user-select: none;
+}
+
+.tool-item:hover {
+  transform: translateX(2px);
+}
+
+.tool-item.selected {
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+}
+
+.quick-select-btn:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+/* Workspace Config Styles */
+.workspace-config {
+  padding: 8px 0;
+}
+
+.workspace-preset-card {
+  height: 100%;
+}
+
+.workspace-preset-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.workspace-preset-card.selected {
+  border-width: 2px;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.custom-path-section .ant-input {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+/* Alert Customizations */
+.wizard-card .ant-alert {
+  border-radius: 6px;
+}
+
+.wizard-card .ant-alert-info {
+  background: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.wizard-card .ant-alert-warning {
+  background: #fffbe6;
+  border-color: #ffe58f;
+}
+
+.wizard-card .ant-alert-success {
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+.wizard-card .ant-alert-error {
+  background: #fff2f0;
+  border-color: #ffccc7;
+}
+
+/* Tag Styles */
+.wizard-card .ant-tag {
+  margin: 2px;
+  font-size: 12px;
+}
+
+/* Space Component */
+.wizard-card .ant-space {
+  flex-wrap: wrap;
+}
+
+/* Typography */
+.wizard-card .ant-typography-secondary {
+  font-size: 13px;
+}
+
+/* Card Meta */
+.wizard-card .ant-card-meta-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .agent-create-wizard-page {
+    padding: 16px;
+  }
+
+  .page-header {
+    margin-bottom: 16px;
+  }
+
+  .header-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-title .ant-typography {
+    margin-top: 8px;
+  }
+
+  .wizard-card .ant-card-body {
+    padding: 16px;
+  }
+
+  .wizard-content {
+    min-height: auto;
+  }
+
+  .wizard-navigation {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .wizard-navigation .ant-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .wizard-steps .ant-steps {
+    font-size: 11px;
+  }
+
+  .wizard-steps .ant-steps-item-title {
+    font-size: 11px;
+  }
+
+  .wizard-steps .ant-steps-item-description {
+    font-size: 10px;
+  }
+
+  .wizard-step-dot {
+    width: 32px;
+    height: 32px;
+  }
+
+  .wizard-step-dot .dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .sidebar-tips {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .wizard-step-dot {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Animation for loading states */
+.loading-fade {
+  animation: loadingFade 1.5s infinite;
+}
+
+@keyframes loadingFade {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Scrollbar Styling */
+.wizard-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.wizard-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.wizard-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.wizard-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Focus States for Accessibility */
+.wizard-step-dot:focus-visible {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+}
+
+.wizard-navigation button:focus-visible {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+  .agent-create-wizard-page {
+    padding: 0;
+    background: #fff;
+  }
+
+  .wizard-navigation,
+  .wizard-sidebar {
+    display: none;
+  }
+
+  .wizard-card {
+    box-shadow: none;
+  }
+}
