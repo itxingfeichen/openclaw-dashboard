@@ -21,6 +21,7 @@ import configEditorRoutes from './routes/config-editor.js'
 import configHistoryRoutes from './routes/config-history.js'
 import logStreamRoutes from './routes/log-stream.js'
 import skillInstallRoutes from './routes/skill-install.js'
+import metricsRoutes from './routes/metrics.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -79,6 +80,7 @@ app.use('/api/tasks', taskRoutes)
 app.use('/api/config', configEditorRoutes)
 app.use('/api/config', configHistoryRoutes)
 app.use('/api/skills', skillInstallRoutes)
+app.use('/api/metrics', metricsRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {
@@ -87,7 +89,8 @@ app.get('/', asyncHandler(async (req, res) => {
     version: '0.1.0',
     status: 'running',
     healthCheck: '/api/health',
-    metrics: '/api/health/metrics',
+    prometheusMetrics: '/api/health/metrics',
+    systemMetrics: '/api/metrics',
     logs: '/api/logs',
   })
 }))
