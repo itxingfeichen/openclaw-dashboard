@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Layout, Typography, Space, Button, Switch, Card, Row, Col, message, Empty } from 'antd';
 import { AppstoreOutlined, UnorderedListOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import AgentFilter from '../../components/AgentFilter';
 import AgentTable from '../../components/AgentTable';
 import AgentCard from '../../components/AgentCard';
@@ -14,6 +15,7 @@ const { Title, Text } = Typography;
  * Main page for Agent management with list/card views, search, filter, and pagination
  */
 const AgentsPage = () => {
+  const navigate = useNavigate();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'card'
@@ -28,6 +30,13 @@ const AgentsPage = () => {
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
+
+  /**
+   * Navigate to create agent page
+   */
+  const handleCreateAgent = () => {
+    navigate('/agents/create');
+  };
 
   /**
    * Load agents data
@@ -148,7 +157,7 @@ const AgentsPage = () => {
               >
                 卡片
               </Button>
-              <Button type="primary" icon={<PlusOutlined />}>
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateAgent}>
                 新建 Agent
               </Button>
             </Space>

@@ -361,6 +361,120 @@ export async function getAgentStatus(id) {
   }
 }
 
+/**
+ * Create a new agent
+ * @param {Object} agentData - Agent creation data
+ * @param {string} agentData.name - Agent name
+ * @param {string} agentData.model - Model selection
+ * @param {string[]} agentData.tools - Tool permissions
+ * @param {string} agentData.workspacePath - Workspace path
+ * @param {string} [agentData.templateId] - Optional template ID
+ */
+export async function createAgent(agentData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agents/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(agentData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to create agent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetch available agent templates
+ */
+export async function fetchTemplates() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agents/templates`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.warn('API fetch failed, using mock templates:', error);
+    
+    // Mock templates for fallback
+    return {
+      templates: [
+        {
+          id: 'template-001',
+          name: '数据处理助手',
+          description: '用于数据处理和转换的通用 Agent',
+          model: 'qwen3.5-plus',
+          tools: ['exec', 'read', 'write', 'web_search'],
+          workspacePath: '/home/admin/.openclaw/workspace/data-agents',
+        },
+        {
+          id: 'template-002',
+          name: '代码开发助手',
+          description: '专注于代码开发和技术任务的 Agent',
+          model: 'qwencode/qwen3.5-plus',
+          tools: ['exec', 'read', 'write', 'edit', 'browser'],
+          workspacePath: '/home/admin/.openclaw/workspace/projects',
+        },
+        {
+          id: 'template-003',
+          name: '产品管理助手',
+          description: '用于产品需求分析和文档管理的 Agent',
+          model: 'qwen3.5-plus',
+          tools: ['read', 'write', 'web_search', 'message'],
+          workspacePath: '/home/admin/.openclaw/workspace/products',
+        },
+        {
+          id: 'template-004',
+          name: '客服助手',
+          description: '用于客户服务和消息回复的 Agent',
+          model: 'qwen3.5-plus',
+          tools: ['read', 'write', 'message', 'tts'],
+          workspacePath: '/home/admin/.openclaw/workspace/support',
+        },
+      ],
+    };
+  }
+}
+
+/**
+ * Validate agent configuration
+ * @param {Object} configData - Configuration to validate
+ * @param {string} configData.name - Agent name
+ * @param {string} configData.workspacePath - Workspace path
+ */
+export async function validateAgentConfig(configData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agents/validate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(configData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to validate agent config:', error);
+    throw error;
+  }
+}
+
 export default {
   fetchAgents,
   fetchAgentById,
@@ -369,4 +483,7 @@ export default {
   stopAgent,
   restartAgent,
   getAgentStatus,
+  createAgent,
+  fetchTemplates,
+  validateAgentConfig,
 };

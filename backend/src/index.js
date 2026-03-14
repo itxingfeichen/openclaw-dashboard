@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename)
 import healthRoutes from './routes/health.js'
 import cliRoutes from './routes/cli.js'
 import agentControlRoutes from './routes/agents.js'
+import agentCreateRoutes from './routes/agent-create.js'
 import logRoutes from './routes/logs.js'
 import taskRoutes from './routes/tasks.js'
 
@@ -65,6 +66,7 @@ app.use((req, res, next) => {
 app.use('/api/health', healthRoutes)
 app.use('/api', cliRoutes)
 app.use('/api/agents', agentControlRoutes)
+app.use('/api/agents', agentCreateRoutes)
 app.use('/api/logs', logRoutes)
 app.use('/api/tasks', taskRoutes)
 

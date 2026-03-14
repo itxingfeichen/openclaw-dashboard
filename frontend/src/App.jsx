@@ -1,14 +1,17 @@
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Button } from 'antd'
 import { useState } from 'react'
 import {
   DashboardOutlined,
   RobotOutlined,
   CheckSquareOutlined,
   SettingOutlined,
-  FileTextOutlined
+  FileTextOutlined,
+  PlusOutlined
 } from '@ant-design/icons'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Dashboard from './pages/Dashboard/Dashboard'
 import AgentsPage from './pages/Agents/AgentsPage'
+import AgentCreate from './pages/AgentCreate/AgentCreate'
 import Logs from './pages/Logs/Logs'
 import TasksPage from './pages/Tasks/Tasks'
 
@@ -16,7 +19,8 @@ const { Header, Content, Footer, Sider } = Layout
 
 function App() {
   const [collapsed, setCollapsed] = useState(false)
-  const [current, setCurrent] = useState('dashboard')
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const items = [
     {
@@ -46,26 +50,34 @@ function App() {
     }
   ]
 
-  const renderContent = () => {
-    switch (current) {
-      case 'dashboard':
-        return <Dashboard />
-      case 'agents':
-        return <AgentsPage />
-      case 'logs':
-        return <Logs />
-      case 'tasks':
-        return <TasksPage />
-      case 'settings':
-        return (
-          <div style={{ padding: '24px' }}>
-            <h1>系统设置</h1>
-            <p>系统设置页面开发中...</p>
-          </div>
-        )
-      default:
-        return <Dashboard />
+  const handleMenuClick = ({ key }) => {
+    if (key === 'dashboard') {
+      navigate('/')
+    } else {
+      navigate(`/${key}`)
     }
+  }
+
+  const renderContent = () => {
+    return (
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/agents" element={<AgentsPage />} />
+        <Route path="/agents/create" element={<AgentCreate />} />
+        <Route path="/logs" element={<Logs />} />
+        <Route path="/tasks" element={<TasksPage />} />
+        <Route 
+          path="/settings" 
+          element={
+            <div style={{ padding: '24px' }}>
+              <h1>系统设置</h1>
+              <p>系统设置页面开发中...</p>
+            </div>
+          } 
+        />
+      </Routes>
+    )
   }
 
   return (
@@ -90,9 +102,9 @@ function App() {
           <Menu
             theme="dark"
             mode="inline"
-            selectedKeys={[current]}
+            selectedKeys={[location.pathname === '/' ? 'dashboard' : location.pathname.split('/')[1]]}
             items={items}
-            onClick={({ key }) => setCurrent(key)}
+            onClick={handleMenuClick}
           />
         </Sider>
         <Layout>
@@ -107,8 +119,19 @@ function App() {
             }}
           >
             <div style={{ fontSize: '18px', fontWeight: 'bold' }}>OpenClaw Dashboard</div>
-            <div style={{ fontSize: '14px', color: '#666' }}>
-              {new Date().toLocaleDateString('zh-CN')}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              {location.pathname === '/agents' && (
+                <Button 
+                  type="primary" 
+                  icon={<PlusOutlined />}
+                  onClick={() => navigate('/agents/create')}
+                >
+                  新建 Agent
+                </Button>
+              )}
+              <div style={{ fontSize: '14px', color: '#666' }}>
+                {new Date().toLocaleDateString('zh-CN')}
+              </div>
             </div>
           </Header>
           <Content style={{ margin: '24px 16px' }}>
