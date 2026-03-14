@@ -240,6 +240,42 @@ const migrations = [
         stmt.run(key);
       });
     }
+  },
+  {
+    version: 11,
+    name: 'add_alert_tables',
+    description: 'Add alert management tables for alert rules and history',
+    up: (db) => {
+      db.exec(getTableSchema('alert_rules'));
+      db.exec(getTableSchema('alert_history'));
+    },
+    down: (db) => {
+      db.exec('DROP TABLE IF EXISTS alert_history');
+      db.exec('DROP TABLE IF EXISTS alert_rules');
+    }
+  },
+  {
+    version: 12,
+    name: 'add_alert_indexes',
+    description: 'Add indexes for alert tables',
+    up: (db) => {
+      db.exec(getIndexSQL('idx_alert_rules_name'));
+      db.exec(getIndexSQL('idx_alert_rules_severity'));
+      db.exec(getIndexSQL('idx_alert_rules_enabled'));
+      db.exec(getIndexSQL('idx_alert_history_rule'));
+      db.exec(getIndexSQL('idx_alert_history_status'));
+      db.exec(getIndexSQL('idx_alert_history_severity'));
+      db.exec(getIndexSQL('idx_alert_history_triggered'));
+    },
+    down: (db) => {
+      db.exec('DROP INDEX IF EXISTS idx_alert_rules_name');
+      db.exec('DROP INDEX IF EXISTS idx_alert_rules_severity');
+      db.exec('DROP INDEX IF EXISTS idx_alert_rules_enabled');
+      db.exec('DROP INDEX IF EXISTS idx_alert_history_rule');
+      db.exec('DROP INDEX IF EXISTS idx_alert_history_status');
+      db.exec('DROP INDEX IF EXISTS idx_alert_history_severity');
+      db.exec('DROP INDEX IF EXISTS idx_alert_history_triggered');
+    }
   }
 ];
 
