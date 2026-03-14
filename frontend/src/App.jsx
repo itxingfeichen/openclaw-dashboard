@@ -10,6 +10,7 @@ import {
 import Dashboard from './pages/Dashboard/Dashboard'
 import AgentsPage from './pages/Agents/AgentsPage'
 import Logs from './pages/Logs/Logs'
+import TasksPage from './pages/Tasks/Tasks'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -54,12 +55,7 @@ function App() {
       case 'logs':
         return <Logs />
       case 'tasks':
-        return (
-          <div style={{ padding: '24px' }}>
-            <h1>任务管理</h1>
-            <p>任务管理页面开发中...</p>
-          </div>
-        )
+        return <TasksPage />
       case 'settings':
         return (
           <div style={{ padding: '24px' }}>

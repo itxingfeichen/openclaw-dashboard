@@ -15,6 +15,7 @@ import healthRoutes from './routes/health.js'
 import cliRoutes from './routes/cli.js'
 import agentControlRoutes from './routes/agents.js'
 import logRoutes from './routes/logs.js'
+import taskRoutes from './routes/tasks.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -65,6 +66,7 @@ app.use('/api/health', healthRoutes)
 app.use('/api', cliRoutes)
 app.use('/api/agents', agentControlRoutes)
 app.use('/api/logs', logRoutes)
+app.use('/api/tasks', taskRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {
