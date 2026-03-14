@@ -8,7 +8,8 @@ import {
   FileTextOutlined,
   PlusOutlined,
   WifiOutlined,
-  BellOutlined
+  BellOutlined,
+  BackupOutlined
 } from '@ant-design/icons'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Dashboard from './pages/Dashboard/Dashboard'
@@ -20,6 +21,7 @@ import LogStream from './pages/LogStream/LogStream'
 import TasksPage from './pages/Tasks/Tasks'
 import ConfigHistory from './pages/ConfigHistory/ConfigHistory'
 import Alerts from './pages/Alerts/Alerts'
+import BackupPage from './pages/Backup/Backup'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -65,6 +67,11 @@ function App() {
       label: '配置历史'
     },
     {
+      key: 'backups',
+      icon: <BackupOutlined />,
+      label: '备份管理'
+    },
+    {
       key: 'settings',
       icon: <SettingOutlined />,
       label: '系统设置'
@@ -91,6 +98,7 @@ function App() {
         <Route path="/alerts" element={<Alerts />} />
         <Route path="/logs" element={<Logs />} />
         <Route path="/logstream" element={<LogStream />} />
+        <Route path="/backups" element={<BackupPage />} />
         <Route 
           path="/settings" 
           element={

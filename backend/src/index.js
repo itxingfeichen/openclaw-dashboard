@@ -23,6 +23,7 @@ import logStreamRoutes from './routes/log-stream.js'
 import skillInstallRoutes from './routes/skill-install.js'
 import metricsRoutes from './routes/metrics.js'
 import alertRoutes from './routes/alerts.js'
+import backupRoutes from './routes/backup.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
@@ -83,6 +84,7 @@ app.use('/api/config', configHistoryRoutes)
 app.use('/api/skills', skillInstallRoutes)
 app.use('/api/metrics', metricsRoutes)
 app.use('/api/alerts', alertRoutes)
+app.use('/api/backup', backupRoutes)
 
 // Root endpoint
 app.get('/', asyncHandler(async (req, res) => {
