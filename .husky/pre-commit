@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint and format checks on frontend and backend
+npm run lint --prefix frontend
+npm run lint --prefix backend
+npm run format:check --prefix frontend
+npm run format:check --prefix backend

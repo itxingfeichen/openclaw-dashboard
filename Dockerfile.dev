@@ -1,0 +1,22 @@
+# OpenClaw Dashboard - Development Dockerfile
+# Hot reload enabled for development
+
+FROM node:20-alpine
+WORKDIR /app
+
+# Install development dependencies
+COPY package*.json ./
+COPY frontend/package*.json ./frontend/
+COPY backend/package*.json ./backend/
+RUN npm install && \
+    npm install --prefix frontend && \
+    npm install --prefix backend
+
+# Copy source code
+COPY . .
+
+# Expose ports
+EXPOSE 3000 5173
+
+# Start development server
+CMD ["npm", "run", "dev"]

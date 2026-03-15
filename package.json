@@ -13,13 +13,29 @@
     "build:backend": "npm run build --prefix backend",
     "install:all": "npm install && npm install --prefix frontend && npm install --prefix backend",
     "lint": "npm run lint --prefix frontend && npm run lint --prefix backend",
+    "lint:check": "npm run lint:check --prefix frontend && npm run lint:check --prefix backend",
     "format": "npm run format --prefix frontend && npm run format --prefix backend",
-    "test": "npm run test --prefix backend"
+    "format:check": "npm run format:check --prefix frontend && npm run format:check --prefix backend",
+    "test": "npm run test --prefix backend",
+    "test:coverage": "npm run test:coverage --prefix backend",
+    "prepare": "husky",
+    "docker:build": "docker build -t openclaw-dashboard:latest .",
+    "docker:run": "docker run -p 3000:3000 -e JWT_SECRET=dev-secret openclaw-dashboard:latest",
+    "docker:dev": "docker compose --profile dev up dev",
+    "docker:prod": "docker compose up -d app",
+    "docker:logs": "docker compose logs -f app"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7"
   },
-  "keywords": ["openclaw", "dashboard", "react", "express", "typescript"],
+  "keywords": [
+    "openclaw",
+    "dashboard",
+    "react",
+    "express",
+    "typescript"
+  ],
   "author": "",
   "license": "ISC",
   "engines": {

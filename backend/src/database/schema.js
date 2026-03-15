@@ -209,6 +209,45 @@ export const schema = {
     )
   `,
 
+  // ==================== Alert Management ====================
+  alert_rules: `
+    CREATE TABLE IF NOT EXISTS alert_rules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT,
+      condition TEXT NOT NULL,
+      severity TEXT DEFAULT 'warning' CHECK(severity IN ('warning', 'critical', 'emergency')),
+      channels TEXT DEFAULT '[]',
+      cooldown INTEGER DEFAULT 300,
+      enabled INTEGER DEFAULT 1 CHECK(enabled IN (0, 1)),
+      metadata TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `,
+
+  alert_history: `
+    CREATE TABLE IF NOT EXISTS alert_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      rule_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      message TEXT NOT NULL,
+      severity TEXT DEFAULT 'warning' CHECK(severity IN ('warning', 'critical', 'emergency')),
+      context TEXT,
+      status TEXT DEFAULT 'active' CHECK(status IN ('active', 'acknowledged', 'resolved')),
+      acknowledged_by TEXT,
+      acknowledged_at DATETIME,
+      acknowledgment_notes TEXT,
+      resolved_by TEXT,
+      resolved_at DATETIME,
+      resolution_notes TEXT,
+      triggered_at DATETIME NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (rule_id) REFERENCES alert_rules(id) ON DELETE CASCADE
+    )
+  `,
+
   // ==================== Migration Tracking ====================
   _migrations: `
     CREATE TABLE IF NOT EXISTS _migrations (
@@ -281,7 +320,18 @@ export const indexes = {
   idx_sessions_user: 'CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id)',
   idx_sessions_token: 'CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token)',
   idx_sessions_expires: 'CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at)',
-  idx_sessions_active: 'CREATE INDEX IF NOT EXISTS idx_sessions_is_active ON sessions(is_active)'
+  idx_sessions_active: 'CREATE INDEX IF NOT EXISTS idx_sessions_is_active ON sessions(is_active)',
+  
+  // Alert Rules
+  idx_alert_rules_name: 'CREATE INDEX IF NOT EXISTS idx_alert_rules_name ON alert_rules(name)',
+  idx_alert_rules_severity: 'CREATE INDEX IF NOT EXISTS idx_alert_rules_severity ON alert_rules(severity)',
+  idx_alert_rules_enabled: 'CREATE INDEX IF NOT EXISTS idx_alert_rules_enabled ON alert_rules(enabled)',
+  
+  // Alert History
+  idx_alert_history_rule: 'CREATE INDEX IF NOT EXISTS idx_alert_history_rule_id ON alert_history(rule_id)',
+  idx_alert_history_status: 'CREATE INDEX IF NOT EXISTS idx_alert_history_status ON alert_history(status)',
+  idx_alert_history_severity: 'CREATE INDEX IF NOT EXISTS idx_alert_history_severity ON alert_history(severity)',
+  idx_alert_history_triggered: 'CREATE INDEX IF NOT EXISTS idx_alert_history_triggered_at ON alert_history(triggered_at)'
 };
 
 /**

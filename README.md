@@ -1,150 +1,146 @@
 # OpenClaw Dashboard
 
-OpenClaw Dashboard 是一个全栈 Web 应用程序，提供现代化的用户界面和强大的后端 API 服务。
+A comprehensive dashboard for managing OpenClaw agents, workflows, and tasks.
 
-## 📁 项目结构
+## 📋 Project Overview
+
+OpenClaw Dashboard provides a web-based interface for:
+- Monitoring agent status and health
+- Managing workflows and tasks
+- Viewing logs and metrics
+- Configuring system settings
+
+## 🏗️ Architecture
 
 ```
 openclaw-dashboard/
-├── frontend/           # React + TypeScript + Vite 前端
-│   ├── src/           # 源代码
-│   ├── public/        # 静态资源
-│   ├── package.json   # 前端依赖配置
-│   └── vite.config.ts # Vite 构建配置
-├── backend/           # Node.js + Express + TypeScript 后端
-│   ├── src/           # 源代码
-│   ├── tests/         # 测试文件
-│   ├── data/          # 数据库文件
-│   └── package.json   # 后端依赖配置
-├── package.json       # 根项目配置
-├── Makefile           # 常用命令快捷方式
-├── .editorconfig      # 编辑器配置
-├── .prettierrc        # 代码格式化配置
-└── README.md          # 项目说明文档
+├── frontend/          # React + TypeScript + Vite frontend
+├── backend/           # Node.js + Express backend API
+├── docs/              # Documentation
+└── scripts/           # Build and deployment scripts
 ```
 
-## 🛠 技术栈
+## 🚀 Quick Start
 
-### 前端
-- **框架**: React 19
-- **语言**: TypeScript 5.9
-- **构建工具**: Vite 8
-- **代码规范**: ESLint 9 + Prettier 3
+### Prerequisites
 
-### 后端
-- **框架**: Express 4
-- **语言**: TypeScript 5.3
-- **运行时**: Node.js 18+
-- **代码规范**: ESLint 8 + Prettier 3
+- Node.js >= 18.x
+- npm >= 9.x
 
-## 🚀 快速开始
+### Development Setup
 
-### 环境要求
-- Node.js >= 18.0.0
-- npm >= 9.0.0
+1. **Clone the repository**
+   ```bash
+   cd /home/admin/openclaw-dashboard
+   ```
 
-### 安装依赖
+2. **Start the backend**
+   ```bash
+   cd backend
+   npm run dev
+   ```
+   Backend runs on: http://localhost:3000
 
+3. **Start the frontend** (in a new terminal)
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+   Frontend runs on: http://localhost:5173
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React 19
+- TypeScript
+- Vite
+- Ant Design 6
+- ESLint + Prettier
+
+### Backend
+- Node.js
+- Express
+- TypeScript
+- SQLite (better-sqlite3)
+- JWT Authentication
+
+## 📦 Available Scripts
+
+### Frontend
 ```bash
-# 使用 Make
-make install
-
-# 或手动安装
-npm install
-npm install --prefix frontend
-npm install --prefix backend
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint issues
+npm run format       # Format code with Prettier
+npm run format:check # Check code formatting
 ```
 
-### 开发模式
-
+### Backend
 ```bash
-# 同时启动前后端开发服务器
-make dev
-
-# 或分别启动
-make dev-fe  # 仅前端 (http://localhost:8080)
-make dev-be  # 仅后端 (http://localhost:3000)
+npm run dev          # Start development server
+npm run build        # Build TypeScript
+npm start            # Start production server
+npm run lint         # Run ESLint
+npm run test         # Run tests
 ```
 
-### 构建生产版本
+## 📁 Project Structure
 
-```bash
-make build
+### Frontend
+```
+frontend/
+├── src/
+│   ├── components/   # Reusable UI components
+│   ├── pages/        # Page components
+│   ├── services/     # API service layer
+│   ├── stores/       # State management
+│   ├── utils/        # Utility functions
+│   ├── App.tsx       # Main app component
+│   └── main.tsx      # Entry point
+├── public/           # Static assets
+└── package.json
 ```
 
-### 代码质量检查
-
-```bash
-# 运行代码检查
-make lint
-
-# 格式化代码
-make format
+### Backend
+```
+backend/
+├── src/
+│   ├── routes/       # API route handlers
+│   ├── services/     # Business logic
+│   ├── repositories/ # Data access layer
+│   ├── middleware/   # Express middleware
+│   ├── utils/        # Utility functions
+│   └── index.js      # Entry point
+├── data/             # SQLite database
+├── logs/             # Application logs
+└── package.json
 ```
 
-### 运行测试
+## 🔧 Configuration
 
-```bash
-make test
+### Environment Variables
+
+Create a `.env` file in the backend directory:
+
+```env
+PORT=3000
+NODE_ENV=development
+JWT_SECRET=your-secret-key
+DB_PATH=./data/openclaw.db
 ```
 
-### 清理项目
+## 📄 Documentation
 
-```bash
-make clean
-```
+- [Contributing Guide](./CONTRIBUTING.md)
+- [API Documentation](./docs/api.md)
+- [Architecture](./docs/architecture.md)
 
-## 📜 开发规范
+## 🤝 Contributing
 
-### 代码风格
-- 使用 2 个空格缩进
-- 使用单引号
-- 行尾不加分号（TypeScript 文件除外）
-- 最大行宽 100 字符
+Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting pull requests.
 
-### Git 提交规范
-```
-feat: 新功能
-fix: 修复 bug
-docs: 文档更新
-style: 代码格式调整
-refactor: 代码重构
-test: 测试相关
-chore: 构建/工具链相关
-```
+## 📝 License
 
-## 🔧 配置文件说明
-
-| 文件 | 说明 |
-|------|------|
-| `.editorconfig` | 编辑器统一配置 |
-| `.prettierrc` | Prettier 格式化规则 |
-| `.prettierignore` | Prettier 忽略文件 |
-| `Makefile` | 常用命令快捷方式 |
-| `package.json` | 项目依赖和脚本 |
-
-## 📝 常用命令
-
-| 命令 | 说明 |
-|------|------|
-| `npm run dev` | 启动开发服务器 |
-| `npm run build` | 构建生产版本 |
-| `npm run lint` | 代码检查 |
-| `npm run format` | 代码格式化 |
-| `npm run test` | 运行测试 |
-
-## 🤝 贡献指南
-
-1. Fork 项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'feat: Add AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 提交 Pull Request
-
-## 📄 许可证
-
-ISC License
-
----
-
-**Happy Coding!** 🎉
+ISC

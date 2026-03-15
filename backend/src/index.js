@@ -14,13 +14,26 @@ const __dirname = path.dirname(__filename)
 import healthRoutes from './routes/health.js'
 import cliRoutes from './routes/cli.js'
 import agentControlRoutes from './routes/agents.js'
+import agentCreateRoutes from './routes/agent-create.js'
 import logRoutes from './routes/logs.js'
+import taskRoutes from './routes/tasks.js'
+import configEditorRoutes from './routes/config-editor.js'
+import configHistoryRoutes from './routes/config-history.js'
+import logStreamRoutes from './routes/log-stream.js'
+import skillInstallRoutes from './routes/skill-install.js'
+import metricsRoutes from './routes/metrics.js'
+import alertRoutes from './routes/alerts.js'
+import backupRoutes from './routes/backup.js'
+import exportRoutes from './routes/export.js'
 
 // Import middleware
 import { errorHandler, asyncHandler, notFoundHandler } from './middleware/error-handler.js'
 import { createMetricsMiddleware } from './metrics/middleware.js'
 import { logInfo, logRequest } from './utils/logger.js'
 import { getPerformanceMonitor } from './utils/performance-monitor.js'
+
+// Import WebSocket service
+import { initializeWebSocketServer, closeWebSocketServer } from './services/websocketService.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -64,19 +77,27 @@ app.use((req, res, next) => {
 app.use('/api/health', healthRoutes)
 app.use('/api', cliRoutes)
 app.use('/api/agents', agentControlRoutes)
+app.use('/api/agents', agentCreateRoutes)
 app.use('/api/logs', logRoutes)
+app.use('/api/tasks', taskRoutes)
+app.use('/api/config', configEditorRoutes)
+app.use('/api/config', configHistoryRoutes)
+app.use('/api/skills', skillInstallRoutes)
+app.use('/api/metrics', metricsRoutes)
+app.use('/api/alerts', alertRoutes)
+app.use('/api/backup', backupRoutes)
+app.use('/api/export', exportRoutes)
 
-// Root endpoint
-app.get('/', asyncHandler(async (req, res) => {
-  res.json({
-    name: 'OpenClaw Dashboard API',
-    version: '0.1.0',
-    status: 'running',
-    healthCheck: '/api/health',
-    metrics: '/api/health/metrics',
-    logs: '/api/logs',
-  })
-}))
+// Root endpoint - serve frontend (static middleware handles this)
+// API info available at /api/health
+
+// Serve static files from frontend build (before error handlers)
+app.use(express.static(path.join(__dirname, '../../frontend/dist')))
+
+// Handle SPA routing - return index.html for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'))
+})
 
 // 404 handler
 app.use(notFoundHandler())

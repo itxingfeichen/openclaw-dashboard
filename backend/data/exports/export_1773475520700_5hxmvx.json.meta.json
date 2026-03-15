@@ -1,0 +1,23 @@
+{
+  "exportId": "export_1773475520700_5hxmvx",
+  "type": "agents",
+  "format": "json",
+  "status": "failed",
+  "filePath": "/home/admin/openclaw-dashboard/backend/data/exports/export_1773475520700_5hxmvx.json",
+  "fields": [
+    "id",
+    "name",
+    "type",
+    "description",
+    "status",
+    "model_name",
+    "created_at",
+    "updated_at"
+  ],
+  "filters": {},
+  "options": {},
+  "createdAt": "2026-03-14T08:05:20.700Z",
+  "completedAt": "2026-03-14T08:05:20.702Z",
+  "errorMessage": "db.prepare is not a function",
+  "recordCount": 0
+}
