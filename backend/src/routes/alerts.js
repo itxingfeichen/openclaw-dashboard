@@ -15,7 +15,10 @@
  */
 
 import express from 'express';
-import {
+import alertService from '../services/alertService.js';
+import { logInfo, logError } from '../utils/logger.js';
+
+const {
   AlertSeverity,
   AlertStatus,
   NotificationChannel,
@@ -30,8 +33,7 @@ import {
   resolveAlertService,
   getActiveAlertsCountService,
   evaluateAllRulesService,
-} from '../services/alertService.js';
-import { logInfo, logError } from '../utils/logger.js';
+} = alertService;
 
 const router = express.Router();
 

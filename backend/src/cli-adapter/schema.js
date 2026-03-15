@@ -109,14 +109,105 @@ const configSchema = {
 }
 
 /**
+ * 工具执行响应 Schema
+ */
+const toolExecutionSchema = {
+  required: ['success', 'tool'],
+  optional: ['data', 'error', 'exitCode', 'validation'],
+}
+
+/**
+ * 记忆搜索响应 Schema
+ */
+const memorySearchSchema = {
+  required: ['success'],
+  optional: ['data', 'error', 'query'],
+  nested: {
+    data: {
+      type: 'object',
+      itemSchema: {
+        required: [],
+        optional: ['results', 'count', 'query'],
+      },
+    },
+  },
+}
+
+/**
+ * 会话列表响应 Schema (增强版)
+ */
+const sessionsListEnhancedSchema = {
+  required: ['sessions'],
+  optional: ['count', 'timestamp', 'path', 'activeMinutes'],
+  nested: {
+    sessions: {
+      type: 'array',
+      itemSchema: {
+        required: ['key'],
+        optional: [
+          'updatedAt',
+          'ageMs',
+          'sessionId',
+          'systemSent',
+          'abortedLastRun',
+          'inputTokens',
+          'outputTokens',
+          'totalTokens',
+          'totalTokensFresh',
+          'model',
+          'modelProvider',
+          'contextTokens',
+          'agentId',
+          'kind',
+        ],
+      },
+    },
+  },
+}
+
+/**
+ * Agent 状态响应 Schema
+ */
+const agentStatusSchema = {
+  required: ['id', 'status'],
+  optional: ['pid', 'uptime', 'workspace', 'model', 'startedAt', 'stoppedAt'],
+}
+
+/**
  * Schema 映射表
  */
 const schemaMap = {
   'openclaw status': statusSchema,
   'openclaw agents list': agentsListSchema,
-  'openclaw sessions --json': sessionsListSchema,
+  'openclaw sessions --json': sessionsListEnhancedSchema,
   'openclaw cron list': cronListSchema,
   'openclaw config get': configSchema,
+  // 工具执行
+  'openclaw read': toolExecutionSchema,
+  'openclaw write': toolExecutionSchema,
+  'openclaw edit': toolExecutionSchema,
+  'openclaw exec': toolExecutionSchema,
+  'openclaw browser snapshot': toolExecutionSchema,
+  'openclaw browser act': toolExecutionSchema,
+  'openclaw browser navigate': toolExecutionSchema,
+  'openclaw process list': toolExecutionSchema,
+  'openclaw process send-keys': toolExecutionSchema,
+  'openclaw process kill': toolExecutionSchema,
+  'openclaw nodes status': toolExecutionSchema,
+  'openclaw nodes notify': toolExecutionSchema,
+  'openclaw message send': toolExecutionSchema,
+  'openclaw web_search': toolExecutionSchema,
+  'openclaw web_fetch': toolExecutionSchema,
+  // 记忆操作
+  'openclaw memory search': memorySearchSchema,
+  'openclaw memory get': memorySearchSchema,
+  'openclaw memory reindex': toolExecutionSchema,
+  'openclaw memory status': toolExecutionSchema,
+  // Agent 操作
+  'openclaw agents status': agentStatusSchema,
+  'openclaw agents create': toolExecutionSchema,
+  'openclaw agents delete': toolExecutionSchema,
+  'openclaw agents config': toolExecutionSchema,
 }
 
 /**

@@ -88,19 +88,16 @@ app.use('/api/alerts', alertRoutes)
 app.use('/api/backup', backupRoutes)
 app.use('/api/export', exportRoutes)
 
-// Root endpoint
-app.get('/', asyncHandler(async (req, res) => {
-  res.json({
-    name: 'OpenClaw Dashboard API',
-    version: '0.1.0',
-    status: 'running',
-    healthCheck: '/api/health',
-    prometheusMetrics: '/api/health/metrics',
-    systemMetrics: '/api/metrics',
-    logs: '/api/logs',
-    export: '/api/export',
-  })
-}))
+// Root endpoint - serve frontend (static middleware handles this)
+// API info available at /api/health
+
+// Serve static files from frontend build (before error handlers)
+app.use(express.static(path.join(__dirname, '../../frontend/dist')))
+
+// Handle SPA routing - return index.html for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'))
+})
 
 // 404 handler
 app.use(notFoundHandler())

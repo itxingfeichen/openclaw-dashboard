@@ -6,7 +6,7 @@
 
 import { WebSocketServer } from 'ws'
 import { logInfo, logError, logDebug, createLogger } from '../utils/logger.js'
-import { logService } from './logService.js'
+import * as logService from './logService.js'
 
 const logger = createLogger('websocketService')
 
