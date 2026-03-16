@@ -47,6 +47,5 @@ temp/
 *.tmp
 *.temp
 
-# Lock files (keep package-lock.json but ignore others)
+# Lock files
 yarn.lock
-pnpm-lock.yaml
