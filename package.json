@@ -5,16 +5,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "npm run dev --prefix frontend",
-    "dev:backend": "npm run dev --prefix backend",
-    "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "npm run build --prefix frontend",
-    "build:backend": "npm run build --prefix backend",
-    "install:all": "npm install && npm install --prefix frontend && npm install --prefix backend",
-    "lint": "npm run lint --prefix frontend && npm run lint --prefix backend",
-    "format": "npm run format --prefix frontend && npm run format --prefix backend",
-    "test": "npm run test --prefix backend"
+    "dev": "concurrently \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
+    "dev:frontend": "pnpm --filter frontend run dev",
+    "dev:backend": "pnpm --filter backend run dev",
+    "build": "pnpm run build:frontend && pnpm run build:backend",
+    "build:frontend": "pnpm --filter frontend run build",
+    "build:backend": "pnpm --filter backend run build",
+    "install:all": "pnpm install --filter frontend --filter backend",
+    "lint": "pnpm --filter frontend run lint && pnpm --filter backend run lint",
+    "format": "pnpm --filter frontend run format && pnpm --filter backend run format",
+    "test": "pnpm --filter backend run test"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
@@ -23,7 +23,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
   }
 }
