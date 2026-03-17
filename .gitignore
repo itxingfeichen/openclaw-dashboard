@@ -49,3 +49,6 @@ temp/
 
 # Lock files
 yarn.lock
+
+# TypeScript build info
+*.tsbuildinfo

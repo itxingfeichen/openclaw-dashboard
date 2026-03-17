@@ -11,10 +11,16 @@
     "build": "pnpm run build:frontend && pnpm run build:backend",
     "build:frontend": "pnpm --filter frontend run build",
     "build:backend": "pnpm --filter backend run build",
+    "start": "pnpm run start:backend",
+    "start:backend": "pnpm --filter backend run start",
+    "start:frontend": "pnpm --filter frontend run preview",
     "install:all": "pnpm install --filter frontend --filter backend",
-    "lint": "pnpm --filter frontend run lint && pnpm --filter backend run lint",
+    "lint": "pnpm --filter frontend run lint:check && pnpm --filter backend run lint:check",
+    "lint:fix": "pnpm --filter frontend run lint && pnpm --filter backend run lint",
     "format": "pnpm --filter frontend run format && pnpm --filter backend run format",
-    "test": "pnpm --filter backend run test"
+    "format:check": "pnpm --filter frontend run format:check && pnpm --filter backend run format:check",
+    "test": "pnpm --filter backend run test",
+    "clean": "rm -rf frontend/node_modules backend/node_modules node_modules frontend/dist backend/dist"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
