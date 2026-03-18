@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../middleware/errorHandler';
 import { UpdateUserInput } from '../validators/user.validator';
-
-// Mock user storage (replace with database in production)
-const users: Map<string, any> = new Map();
+import { userService } from '../services/user.service';
 
 export const getUserById = async (
   req: Request<{ id: string }>,
@@ -13,7 +11,7 @@ export const getUserById = async (
   try {
     const { id } = req.params;
 
-    const user = users.get(id);
+    const user = userService.findById(id);
 
     if (!user) {
       throw new AppError('User not found', 404);
@@ -46,7 +44,7 @@ export const updateUser = async (
     const { id } = req.params;
     const updates = req.body;
 
-    const user = users.get(id);
+    const user = userService.findById(id);
 
     if (!user) {
       throw new AppError('User not found', 404);
@@ -54,26 +52,17 @@ export const updateUser = async (
 
     // Check for duplicate email/username
     if (updates.email || updates.username) {
-      const existingUser = Array.from(users.values()).find(
-        (u) =>
-          u.id !== id &&
-          (updates.email && u.email === updates.email) ||
-          (updates.username && u.username === updates.username)
-      );
-
-      if (existingUser) {
+      if (userService.exists(updates.email, updates.username, id)) {
         throw new AppError('Email or username already in use', 409);
       }
     }
 
     // Update user
-    const updatedUser = {
-      ...user,
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
+    const updatedUser = userService.update(id, updates);
 
-    users.set(id, updatedUser);
+    if (!updatedUser) {
+      throw new AppError('Failed to update user', 500);
+    }
 
     console.log(`[User] User updated: ${id}`);
 
@@ -93,9 +82,4 @@ export const updateUser = async (
   } catch (error) {
     next(error);
   }
-};
-
-// Helper function to add mock users
-export const addMockUser = (user: any) => {
-  users.set(user.id, user);
 };

@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../middleware/errorHandler';
 import { RegisterInput, LoginInput } from '../validators/auth.validator';
-
-// Mock user storage (replace with database in production)
-const users: Map<string, any> = new Map();
+import { userService } from '../services/user.service';
 
 export const register = async (
   req: Request<{}, {}, RegisterInput>,
@@ -14,25 +12,16 @@ export const register = async (
     const { username, email, password } = req.body;
 
     // Check if user already exists
-    const existingUser = Array.from(users.values()).find(
-      (u) => u.email === email || u.username === username
-    );
-
-    if (existingUser) {
+    if (userService.exists(email, username)) {
       throw new AppError('User with this email or username already exists', 409);
     }
 
-    // Create new user (in production, hash password)
-    const newUser = {
-      id: crypto.randomUUID(),
+    // Create new user
+    const newUser = userService.create({
       username,
       email,
       password, // TODO: Hash password in production
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    users.set(newUser.id, newUser);
+    });
 
     console.log(`[Auth] User registered: ${email}`);
 
@@ -62,7 +51,7 @@ export const login = async (
     const { email, password } = req.body;
 
     // Find user
-    const user = Array.from(users.values()).find((u) => u.email === email);
+    const user = userService.findByEmail(email);
 
     if (!user) {
       throw new AppError('Invalid email or password', 401);
