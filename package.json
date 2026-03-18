@@ -1,0 +1,24 @@
+{
+  "name": "openclaw-dashboard",
+  "version": "0.1.0",
+  "description": "OpenClaw Dashboard - Full-stack web application",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint:check",
+    "lint:backend": "cd backend && npm run lint:check",
+    "format": "npm run format:frontend && npm run format:backend",
+    "format:frontend": "cd frontend && npm run format",
+    "format:backend": "cd backend && npm run format",
+    "install:all": "cd frontend && npm install && cd ../backend && npm install"
+  },
+  "keywords": ["openclaw", "dashboard", "react", "typescript", "nodejs", "express"],
+  "author": "",
+  "license": "ISC"
+}
