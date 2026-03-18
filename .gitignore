@@ -34,3 +34,12 @@ coverage/
 # Temporary files
 tmp/
 temp/
+
+# Prisma
+backend/prisma/migrations/*/migration_lock.toml
+backend/*.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3

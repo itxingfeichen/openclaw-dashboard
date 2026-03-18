@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================================================
+// User Model - 用户模型
+// ============================================================================
+/// 系统用户，用于身份认证和权限管理
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         UserRole @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  sessions         Session[]
+  dashboardConfigs DashboardConfig[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// 用户角色枚举
+enum UserRole {
+  ADMIN
+  USER
+  VIEWER
+}
+
+// ============================================================================
+// Session Model - 会话模型
+// ============================================================================
+/// 用户会话，用于管理登录状态和令牌
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
+}
+
+// ============================================================================
+// DashboardConfig Model - 仪表板配置模型
+// ============================================================================
+/// 用户自定义的仪表板布局和小部件配置
+model DashboardConfig {
+  id        String   @id @default(uuid())
+  userId    String
+  layout    String   // JSON string representing the layout configuration
+  widgets   String   // JSON string representing the widgets configuration
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("dashboard_configs")
+}
+
+// ============================================================================
+// SystemStatus Model - 系统状态模型
+// ============================================================================
+/// 系统组件的状态监控记录
+model SystemStatus {
+  id          String   @id @default(uuid())
+  componentName String
+  status      SystemStatusType @default(UNKNOWN)
+  lastCheck   DateTime @default(now())
+  metrics     String?  // JSON string representing additional metrics data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([componentName])
+  @@index([status])
+  @@map("system_statuses")
+}
+
+// 系统状态类型枚举
+enum SystemStatusType {
+  HEALTHY
+  DEGRADED
+  DOWN
+  UNKNOWN
+}
