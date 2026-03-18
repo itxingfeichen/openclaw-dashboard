@@ -1,150 +1,140 @@
 # OpenClaw Dashboard
 
-OpenClaw Dashboard 是一个全栈 Web 应用程序，提供现代化的用户界面和强大的后端 API 服务。
+OpenClaw Dashboard 是一个现代化的 Web 应用，用于管理和监控 OpenClaw 系统。
 
-## 📁 项目结构
+## 项目结构
 
 ```
 openclaw-dashboard/
-├── frontend/           # React + TypeScript + Vite 前端
-│   ├── src/           # 源代码
-│   ├── public/        # 静态资源
-│   ├── package.json   # 前端依赖配置
-│   └── vite.config.ts # Vite 构建配置
-├── backend/           # Node.js + Express + TypeScript 后端
-│   ├── src/           # 源代码
-│   ├── tests/         # 测试文件
-│   ├── data/          # 数据库文件
-│   └── package.json   # 后端依赖配置
-├── package.json       # 根项目配置
-├── Makefile           # 常用命令快捷方式
-├── .editorconfig      # 编辑器配置
-├── .prettierrc        # 代码格式化配置
-└── README.md          # 项目说明文档
+├── frontend/          # React + TypeScript + Vite 前端
+│   ├── src/          # 源代码
+│   ├── public/       # 静态资源
+│   └── package.json  # 前端依赖和脚本
+├── backend/          # Node.js + TypeScript + Express 后端
+│   ├── src/          # 源代码
+│   └── package.json  # 后端依赖和脚本
+└── README.md         # 项目说明文档
 ```
 
-## 🛠 技术栈
+## 技术栈
 
 ### 前端
-- **框架**: React 19
-- **语言**: TypeScript 5.9
-- **构建工具**: Vite 8
-- **代码规范**: ESLint 9 + Prettier 3
+- **React 19** - UI 框架
+- **TypeScript** - 类型安全
+- **Vite** - 构建工具
+- **ESLint + Prettier** - 代码规范
 
 ### 后端
-- **框架**: Express 4
-- **语言**: TypeScript 5.3
-- **运行时**: Node.js 18+
-- **代码规范**: ESLint 8 + Prettier 3
+- **Node.js** - 运行时
+- **TypeScript** - 类型安全
+- **Express** - Web 框架
+- **ESLint + Prettier** - 代码规范
 
-## 🚀 快速开始
+## 快速开始
 
 ### 环境要求
-- Node.js >= 18.0.0
-- npm >= 9.0.0
+- Node.js >= 18
+- npm >= 9
 
 ### 安装依赖
 
 ```bash
-# 使用 Make
-make install
+# 安装所有依赖（从项目根目录）
+npm run install:all
 
-# 或手动安装
-npm install
-npm install --prefix frontend
-npm install --prefix backend
+# 或者分别安装
+cd frontend && npm install
+cd ../backend && npm install
 ```
 
-### 开发模式
+### 启动开发服务器
 
+#### 方式一：同时启动前后端
 ```bash
-# 同时启动前后端开发服务器
-make dev
-
-# 或分别启动
-make dev-fe  # 仅前端 (http://localhost:8080)
-make dev-be  # 仅后端 (http://localhost:3000)
+# 从项目根目录
+npm run dev
 ```
+
+#### 方式二：分别启动
+
+**前端**
+```bash
+cd frontend
+npm run dev
+```
+访问地址：http://localhost:5173
+
+**后端**
+```bash
+cd backend
+npm run dev
+```
+访问地址：http://localhost:3001
+健康检查：http://localhost:3001/api/health
 
 ### 构建生产版本
 
 ```bash
-make build
+# 构建所有（从项目根目录）
+npm run build
+
+# 或者分别构建
+cd frontend && npm run build
+cd ../backend && npm run build
 ```
 
-### 代码质量检查
+### 代码规范检查
 
 ```bash
-# 运行代码检查
-make lint
+# 检查所有（从项目根目录）
+npm run lint
 
-# 格式化代码
-make format
+# 或者分别检查
+cd frontend && npm run lint:check
+cd ../backend && npm run lint:check
 ```
 
-### 运行测试
+### 自动修复代码格式
 
 ```bash
-make test
+# 格式化所有（从项目根目录）
+npm run format
+
+# 或者分别格式化
+cd frontend && npm run format
+cd ../backend && npm run format
 ```
 
-### 清理项目
+## API 端点
 
+| 端点 | 方法 | 描述 |
+|------|------|------|
+| `/api` | GET | API 欢迎信息 |
+| `/api/health` | GET | 健康检查 |
+
+## 开发规范
+
+- 使用 TypeScript 严格模式
+- 遵循 ESLint 规则
+- 使用 Prettier 格式化代码
+- 提交前运行 lint 和 format 检查
+
+## 环境变量
+
+### 后端 (.env)
 ```bash
-make clean
+PORT=3001
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:5173
+API_PREFIX=/api
 ```
 
-## 📜 开发规范
-
-### 代码风格
-- 使用 2 个空格缩进
-- 使用单引号
-- 行尾不加分号（TypeScript 文件除外）
-- 最大行宽 100 字符
-
-### Git 提交规范
-```
-feat: 新功能
-fix: 修复 bug
-docs: 文档更新
-style: 代码格式调整
-refactor: 代码重构
-test: 测试相关
-chore: 构建/工具链相关
+### 前端 (.env)
+```bash
+VITE_API_URL=http://localhost:3001/api
+VITE_APP_TITLE=OpenClaw Dashboard
 ```
 
-## 🔧 配置文件说明
+## License
 
-| 文件 | 说明 |
-|------|------|
-| `.editorconfig` | 编辑器统一配置 |
-| `.prettierrc` | Prettier 格式化规则 |
-| `.prettierignore` | Prettier 忽略文件 |
-| `Makefile` | 常用命令快捷方式 |
-| `package.json` | 项目依赖和脚本 |
-
-## 📝 常用命令
-
-| 命令 | 说明 |
-|------|------|
-| `npm run dev` | 启动开发服务器 |
-| `npm run build` | 构建生产版本 |
-| `npm run lint` | 代码检查 |
-| `npm run format` | 代码格式化 |
-| `npm run test` | 运行测试 |
-
-## 🤝 贡献指南
-
-1. Fork 项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'feat: Add AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 提交 Pull Request
-
-## 📄 许可证
-
-ISC License
-
----
-
-**Happy Coding!** 🎉
+ISC

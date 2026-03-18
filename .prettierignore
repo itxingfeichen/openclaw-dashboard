@@ -1,9 +1,6 @@
 node_modules
 dist
 build
-coverage
-*.min.js
-*.lock
+*.log
 .env
-.env.local
-data/*.db
+.env.*
