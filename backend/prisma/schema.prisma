@@ -9,56 +9,80 @@ datasource db {
   provider = "sqlite"
 }
 
+// ============================================================================
+// User Model - 用户模型
+// ============================================================================
+/// 系统用户，用于身份认证和权限管理
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
   password  String
   name      String?
-  role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sessions  Session[]
+  // Relations
+  sessions   Session[]
   dashboards Dashboard[]
 
+  @@index([email])
   @@map("users")
 }
 
+// ============================================================================
+// Session Model - 会话模型
+// ============================================================================
+/// 用户会话，用于管理登录状态和令牌
 model Session {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
 
+  // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+  @@index([token])
   @@map("sessions")
 }
 
+// ============================================================================
+// Dashboard Model - 仪表盘模型
+// ============================================================================
+/// 用户自定义的仪表板配置
 model Dashboard {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
   name      String
-  config    String?  @default("{}")
+  config    String?  // JSON string representing dashboard configuration
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   widgets Widget[]
 
+  @@index([userId])
   @@map("dashboards")
 }
 
+// ============================================================================
+// Widget Model - 组件模型
+// ============================================================================
+/// 仪表板中的小部件/组件
 model Widget {
-  id         String   @id @default(cuid())
+  id          String   @id @default(uuid())
   dashboardId String
-  type       String
-  config     String?  @default("{}")
-  position   String?  @default("{}")
-  createdAt  DateTime @default(now())
+  type        String   // Widget type (e.g., "chart", "table", "metric")
+  config      String?  // JSON string representing widget configuration
+  position    Int      // Display order/position
+  createdAt   DateTime @default(now())
 
+  // Relations
   dashboard Dashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
 
+  @@index([dashboardId])
   @@map("widgets")
 }
