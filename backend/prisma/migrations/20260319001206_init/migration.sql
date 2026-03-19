@@ -2,9 +2,8 @@
 CREATE TABLE "users" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "email" TEXT NOT NULL,
-    "passwordHash" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "name" TEXT,
-    "role" TEXT NOT NULL DEFAULT 'USER',
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
@@ -20,25 +19,25 @@ CREATE TABLE "sessions" (
 );
 
 -- CreateTable
-CREATE TABLE "dashboard_configs" (
+CREATE TABLE "dashboards" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
-    "layout" TEXT NOT NULL,
-    "widgets" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "config" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "dashboard_configs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT "dashboards_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
-CREATE TABLE "system_statuses" (
+CREATE TABLE "widgets" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "componentName" TEXT NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'UNKNOWN',
-    "lastCheck" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "metrics" TEXT,
+    "dashboardId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "config" TEXT,
+    "position" INTEGER NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    CONSTRAINT "widgets_dashboardId_fkey" FOREIGN KEY ("dashboardId") REFERENCES "dashboards" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -57,10 +56,7 @@ CREATE INDEX "sessions_userId_idx" ON "sessions"("userId");
 CREATE INDEX "sessions_token_idx" ON "sessions"("token");
 
 -- CreateIndex
-CREATE INDEX "dashboard_configs_userId_idx" ON "dashboard_configs"("userId");
+CREATE INDEX "dashboards_userId_idx" ON "dashboards"("userId");
 
 -- CreateIndex
-CREATE INDEX "system_statuses_componentName_idx" ON "system_statuses"("componentName");
-
--- CreateIndex
-CREATE INDEX "system_statuses_status_idx" ON "system_statuses"("status");
+CREATE INDEX "widgets_dashboardId_idx" ON "widgets"("dashboardId");
