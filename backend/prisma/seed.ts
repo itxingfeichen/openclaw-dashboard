@@ -95,7 +95,7 @@ async function main() {
         unit: '%',
         threshold: 80,
       }),
-      position: 1,
+      position: '1',
       createdAt: new Date(),
     },
   });
@@ -109,7 +109,7 @@ async function main() {
         chartType: 'line',
         dataPoints: 24,
       }),
-      position: 2,
+      position: '2',
       createdAt: new Date(),
     },
   });
@@ -122,7 +122,7 @@ async function main() {
         title: 'Active Processes',
         columns: ['name', 'cpu', 'memory'],
       }),
-      position: 3,
+      position: '3',
       createdAt: new Date(),
     },
   });
@@ -137,7 +137,7 @@ async function main() {
         unit: 'req/s',
         threshold: 1000,
       }),
-      position: 1,
+      position: '1',
       createdAt: new Date(),
     },
   });
@@ -151,7 +151,7 @@ async function main() {
         chartType: 'area',
         dataPoints: 60,
       }),
-      position: 2,
+      position: '2',
       createdAt: new Date(),
     },
   });
