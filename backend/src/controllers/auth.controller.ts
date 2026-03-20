@@ -3,6 +3,9 @@ import { AppError } from '../middleware/errorHandler';
 import { RegisterInput, LoginInput } from '../validators/auth.validator';
 import { userService } from '../services/user.service';
 
+// Token storage (replace with Redis in production)
+const tokens: Map<string, { userId: string; expiresAt: Date }> = new Map();
+
 export const register = async (
   req: Request<{}, {}, RegisterInput>,
   res: Response,
@@ -21,6 +24,7 @@ export const register = async (
       username,
       email,
       password, // TODO: Hash password in production
+      role: 'user',
     });
 
     console.log(`[Auth] User registered: ${email}`);
@@ -32,6 +36,8 @@ export const register = async (
           id: newUser.id,
           username: newUser.username,
           email: newUser.email,
+          displayName: newUser.displayName,
+          role: newUser.role,
           createdAt: newUser.createdAt,
         },
         message: 'User registered successfully',
@@ -64,6 +70,12 @@ export const login = async (
 
     // Generate token (in production, use JWT)
     const token = crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    tokens.set(token, {
+      userId: user.id,
+      expiresAt,
+    });
 
     console.log(`[Auth] User logged in: ${email}`);
 
@@ -74,8 +86,11 @@ export const login = async (
           id: user.id,
           username: user.username,
           email: user.email,
+          displayName: user.displayName,
+          role: user.role,
         },
         token,
+        expiresAt: expiresAt.toISOString(),
         message: 'Login successful',
       },
     });
@@ -85,12 +100,17 @@ export const login = async (
 };
 
 export const logout = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // In production, invalidate token here
+    // Invalidate token
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    
+    if (token) {
+      tokens.delete(token);
+    }
 
     console.log(`[Auth] User logged out`);
 
@@ -98,6 +118,85 @@ export const logout = async (
       success: true,
       data: {
         message: 'Logout successful',
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCurrentUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          displayName: user.displayName,
+          role: user.role,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+      throw new AppError('Token required', 400);
+    }
+
+    const tokenData = tokens.get(token);
+
+    if (!tokenData) {
+      throw new AppError('Invalid token', 401);
+    }
+
+    if (tokenData.expiresAt < new Date()) {
+      tokens.delete(token);
+      throw new AppError('Token expired', 401);
+    }
+
+    // Generate new token
+    const newToken = crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    tokens.set(newToken, {
+      userId: tokenData.userId,
+      expiresAt,
+    });
+
+    // Remove old token
+    tokens.delete(token);
+
+    console.log(`[Auth] Token refreshed for user: ${tokenData.userId}`);
+
+    res.json({
+      success: true,
+      data: {
+        token: newToken,
+        expiresAt: expiresAt.toISOString(),
+        message: 'Token refreshed successfully',
       },
     });
   } catch (error) {

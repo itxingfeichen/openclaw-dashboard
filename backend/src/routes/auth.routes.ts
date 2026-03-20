@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { register, login, logout } from '../controllers/auth.controller';
+import { register, login, logout, getCurrentUser, refreshToken } from '../controllers/auth.controller';
 import { validateRequest } from '../middleware/validateRequest';
 import { registerSchema, loginSchema } from '../validators/auth.validator';
 import { authLimiter } from '../middleware/rateLimiter';
+import { authenticate } from '../middleware/auth';
 
 const router: Router = Router();
 
@@ -15,16 +16,30 @@ router.post('/register', authLimiter, validateRequest(registerSchema), register)
 
 /**
  * @route   POST /api/auth/login
- * @desc    Login user
+ * @desc    Login user and receive access token
  * @access  Public
  */
 router.post('/login', authLimiter, validateRequest(loginSchema), login);
 
 /**
  * @route   POST /api/auth/logout
- * @desc    Logout user
+ * @desc    Logout current user and invalidate token
  * @access  Private
  */
-router.post('/logout', logout);
+router.post('/logout', authenticate, logout);
+
+/**
+ * @route   GET /api/auth/me
+ * @desc    Get current user information
+ * @access  Private
+ */
+router.get('/me', authenticate, getCurrentUser);
+
+/**
+ * @route   POST /api/auth/refresh
+ * @desc    Refresh access token
+ * @access  Private
+ */
+router.post('/refresh', authenticate, refreshToken);
 
 export default router;

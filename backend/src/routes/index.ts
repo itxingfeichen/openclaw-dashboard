@@ -6,10 +6,21 @@ import systemRoutes from './system.routes';
 
 const router: Router = Router();
 
-// Mount routes
+/**
+ * API Routes
+ * Base path: /api
+ */
+
+// Authentication routes
 router.use('/auth', authRoutes);
+
+// User management routes
 router.use('/users', userRoutes);
-router.use('/dashboard', dashboardRoutes);
+
+// Dashboard management routes
+router.use('/dashboards', dashboardRoutes);
+
+// System monitoring routes
 router.use('/system', systemRoutes);
 
 export default router;
