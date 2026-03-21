@@ -16,7 +16,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.3.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -29,7 +31,11 @@
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
-  "keywords": ["openclaw", "dashboard", "api"],
+  "keywords": [
+    "openclaw",
+    "dashboard",
+    "api"
+  ],
   "author": "",
   "license": "ISC"
 }
