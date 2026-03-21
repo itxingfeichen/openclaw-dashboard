@@ -1,0 +1,117 @@
+.resource-usage-chart {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 1200px;
+}
+
+.resource-usage-chart.loading,
+.resource-usage-chart.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.loading-spinner {
+  color: #888;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 1.1rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.chart-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.time-range-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.time-range-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #aaa;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.time-range-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.time-range-btn.active {
+  background: rgba(96, 165, 250, 0.2);
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+}
+
+.custom-tooltip {
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.tooltip-label {
+  margin: 0 0 0.5rem 0;
+  font-weight: bold;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.tooltip-item {
+  margin: 0.25rem 0;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .time-range-selector {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+}

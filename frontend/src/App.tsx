@@ -1,27 +1,30 @@
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AgentList } from './components/AgentList';
+import { AgentDetail } from './components/AgentDetail';
 import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>🦀 OpenClaw Dashboard</h1>
-        <p>Welcome to your OpenClaw Dashboard</p>
-      </header>
+    <BrowserRouter>
+      <div className="app">
+        <header className="app-header">
+          <h1>🦀 OpenClaw Dashboard</h1>
+          <p>Your OpenClaw Agent Management Console</p>
+        </header>
 
-      <main className="app-main">
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </p>
-        </div>
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<Navigate to="/agents" replace />} />
+            <Route path="/agents" element={<AgentList />} />
+            <Route path="/agents/:name" element={<AgentDetail />} />
+          </Routes>
+        </main>
 
-        <p className="read-the-docs">Click on the OpenClaw logo to learn more</p>
-      </main>
-    </div>
+        <footer className="app-footer">
+          <p>OpenClaw Dashboard v1.0.0</p>
+        </footer>
+      </div>
+    </BrowserRouter>
   );
 }
 
