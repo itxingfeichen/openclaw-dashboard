@@ -19,6 +19,7 @@ export const createUserSchema = z.object({
       .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
       .regex(/[0-9]/, 'Password must contain at least one number'),
     name: z.string().max(50, 'Name must be less than 50 characters').optional(),
+    displayName: z.string().max(50, 'Display name must be less than 50 characters').optional(),
     role: z.enum(['user', 'admin']).optional(),
   }),
 });

@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Express } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import apiRoutes from './routes';
@@ -7,7 +7,7 @@ import { requestLogger } from './middleware/requestLogger';
 
 dotenv.config();
 
-const app = express();
+const app: Express = express();
 const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 

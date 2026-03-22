@@ -9,6 +9,7 @@ declare global {
         id: string;
         username: string;
         email: string;
+        displayName?: string;
         role: string;
       };
     }
@@ -19,7 +20,7 @@ declare global {
  * Authentication middleware
  * Verifies JWT token and attaches user to request
  */
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = (req: Request, _res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
@@ -53,7 +54,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
  * Admin authorization middleware
  * Checks if user has admin role
  */
-export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
+export const requireAdmin = (req: Request, _res: Response, next: NextFunction) => {
   if (!req.user) {
     return next(new AppError('Authentication required', 401));
   }
@@ -69,7 +70,7 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
  * Optional authentication middleware
  * Attaches user if token is present, but doesn't require it
  */
-export const optionalAuth = (req: Request, res: Response, next: NextFunction) => {
+export const optionalAuth = (req: Request, _res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
