@@ -73,6 +73,174 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* ============================================
+   Authentication Pages (Login/Register)
+   ============================================ */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.auth-card .ant-card-body {
+  padding: 2rem;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-title {
+  margin: 0 0 0.5rem 0 !important;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.75rem !important;
+  font-weight: 600 !important;
+}
+
+.auth-form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.auth-link {
+  color: #60a5fa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-link:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   Ant Design Theme Overrides (Dark Mode)
+   ============================================ */
+
+:root {
+  --ant-primary-color: #60a5fa;
+  --ant-primary-color-hover: #93c5fd;
+  --ant-primary-color-active: #3b82f6;
+  --ant-border-radius: 8px;
+}
+
+/* Form input styling */
+.ant-input,
+.ant-input-password {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+.ant-input:hover,
+.ant-input-password:hover {
+  border-color: rgba(96, 165, 250, 0.5) !important;
+}
+
+.ant-input:focus,
+.ant-input-password:focus,
+.ant-input-focused {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2) !important;
+}
+
+.ant-input::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Button styling */
+.ant-btn-primary {
+  background: linear-gradient(135deg, #60a5fa, #8b5cf6) !important;
+  border: none !important;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #93c5fd, #a78bfa) !important;
+}
+
+.ant-btn-primary:active {
+  background: linear-gradient(135deg, #3b82f6, #7c3aed) !important;
+}
+
+/* Card styling */
+.ant-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ant-card-head {
+  background: transparent !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+.ant-card-body {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Form label styling */
+.ant-form-item-label > label {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Checkbox styling */
+.ant-checkbox-wrapper {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.ant-checkbox-inner {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background: #60a5fa !important;
+  border-color: #60a5fa !important;
+}
+
+/* Message styling */
+.ant-message-notice-content {
+  background: rgba(30, 30, 50, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+/* Typography */
+.ant-typography {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.ant-typography-secondary {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
 @media (max-width: 768px) {
   .app-header h1 {
     font-size: 2rem;
@@ -81,5 +249,23 @@
   .app-main {
     padding: 1rem;
     gap: 1.5rem;
+  }
+
+  .auth-card {
+    margin: 1rem;
+  }
+
+  .auth-card .ant-card-body {
+    padding: 1.5rem;
+  }
+
+  .auth-form-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .auth-title {
+    font-size: 1.5rem !important;
   }
 }
