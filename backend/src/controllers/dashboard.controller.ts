@@ -23,8 +23,8 @@ export const getDashboards = async (
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = (page - 1) * limit;
     
-    // In production, get userId from authenticated user
-    const userId = req.user?.id || 'default';
+    // Get userId from authenticated user
+    const userId = req.user?.userId || 'default';
 
     const dashboards = dashboardService.findByUser(userId, { offset, limit });
     const total = dashboardService.countByUser(userId);
@@ -65,8 +65,8 @@ export const createDashboard = async (
   try {
     const dashboardData = req.body;
     
-    // In production, get userId from authenticated user
-    const userId = req.user?.id || 'default';
+    // Get userId from authenticated user
+    const userId = req.user?.userId || 'default';
 
     const dashboard = dashboardService.create({
       ...dashboardData,

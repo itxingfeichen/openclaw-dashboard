@@ -1,5 +1,5 @@
-export { errorHandler, notFoundHandler, asyncHandler, createHandler } from './error-handler';
+export { errorHandler, notFoundHandler } from './errorHandler';
 export { requestLogger } from './requestLogger';
 export { authLimiter, generalLimiter } from './rateLimiter';
 export { validateRequest } from './validateRequest';
-export { authenticate, requireAdmin, optionalAuth } from './auth';
+export { authenticate, requireAdmin, optionalAuth } from './auth.middleware';

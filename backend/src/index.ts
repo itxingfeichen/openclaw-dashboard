@@ -7,7 +7,7 @@ import { requestLogger } from './middleware/requestLogger';
 
 dotenv.config();
 
-const app = express();
+const app: ReturnType<typeof express> = express();
 const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 

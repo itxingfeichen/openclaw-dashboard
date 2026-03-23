@@ -2,9 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../middleware/errorHandler';
 import { RegisterInput, LoginInput } from '../validators/auth.validator';
 import { userService } from '../services/user.service';
+import { generateTokens, verifyRefreshToken, JwtPayload } from '../utils/jwt';
 
-// Token storage (replace with Redis in production)
-const tokens: Map<string, { userId: string; expiresAt: Date }> = new Map();
+// Refresh token storage (replace with Redis in production)
+const refreshTokens: Map<string, { userId: string; expiresAt: Date }> = new Map();
 
 export const register = async (
   req: Request<{}, {}, RegisterInput>,
@@ -68,13 +69,21 @@ export const login = async (
       throw new AppError('Invalid email or password', 401);
     }
 
-    // Generate token (in production, use JWT)
-    const token = crypto.randomUUID();
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-    tokens.set(token, {
+    // Generate JWT tokens
+    const tokenPayload: JwtPayload = {
       userId: user.id,
-      expiresAt,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    };
+
+    const { accessToken, refreshToken, accessTokenExpiresAt, refreshTokenExpiresAt } = 
+      generateTokens(tokenPayload);
+
+    // Store refresh token for later validation
+    refreshTokens.set(refreshToken, {
+      userId: user.id,
+      expiresAt: refreshTokenExpiresAt,
     });
 
     console.log(`[Auth] User logged in: ${email}`);
@@ -89,8 +98,10 @@ export const login = async (
           displayName: user.displayName,
           role: user.role,
         },
-        token,
-        expiresAt: expiresAt.toISOString(),
+        accessToken,
+        refreshToken,
+        accessTokenExpiresAt: accessTokenExpiresAt.toISOString(),
+        refreshTokenExpiresAt: refreshTokenExpiresAt.toISOString(),
         message: 'Login successful',
       },
     });
@@ -105,11 +116,11 @@ export const logout = async (
   next: NextFunction
 ) => {
   try {
-    // Invalidate token
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    // Invalidate refresh token
+    const refreshToken = req.headers.authorization?.replace('Bearer ', '');
     
-    if (token) {
-      tokens.delete(token);
+    if (refreshToken) {
+      refreshTokens.delete(refreshToken);
     }
 
     console.log(`[Auth] User logged out`);
@@ -141,10 +152,10 @@ export const getCurrentUser = async (
       success: true,
       data: {
         user: {
-          id: user.id,
+          id: user.userId,
           username: user.username,
           email: user.email,
-          displayName: user.displayName,
+          displayName: user.username,
           role: user.role,
         },
       },
@@ -160,46 +171,69 @@ export const refreshToken = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const { refreshToken } = req.body;
 
-    if (!token) {
-      throw new AppError('Token required', 400);
+    if (!refreshToken) {
+      throw new AppError('Refresh token required', 400);
     }
 
-    const tokenData = tokens.get(token);
+    // Verify refresh token
+    const payload = verifyRefreshToken(refreshToken);
+
+    // Check if refresh token is in our store
+    const tokenData = refreshTokens.get(refreshToken);
 
     if (!tokenData) {
-      throw new AppError('Invalid token', 401);
+      throw new AppError('Invalid refresh token', 401);
     }
 
     if (tokenData.expiresAt < new Date()) {
-      tokens.delete(token);
-      throw new AppError('Token expired', 401);
+      refreshTokens.delete(refreshToken);
+      throw new AppError('Refresh token expired', 401);
     }
 
-    // Generate new token
-    const newToken = crypto.randomUUID();
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    // Remove old refresh token
+    refreshTokens.delete(refreshToken);
 
-    tokens.set(newToken, {
-      userId: tokenData.userId,
-      expiresAt,
+    // Generate new token pair
+    const tokenPayload: JwtPayload = {
+      userId: payload.userId,
+      email: payload.email,
+      username: payload.username,
+      role: payload.role,
+    };
+
+    const { accessToken, refreshToken: newRefreshToken, accessTokenExpiresAt, refreshTokenExpiresAt } = 
+      generateTokens(tokenPayload);
+
+    // Store new refresh token
+    refreshTokens.set(newRefreshToken, {
+      userId: payload.userId,
+      expiresAt: refreshTokenExpiresAt,
     });
 
-    // Remove old token
-    tokens.delete(token);
-
-    console.log(`[Auth] Token refreshed for user: ${tokenData.userId}`);
+    console.log(`[Auth] Token refreshed for user: ${payload.userId}`);
 
     res.json({
       success: true,
       data: {
-        token: newToken,
-        expiresAt: expiresAt.toISOString(),
+        accessToken,
+        refreshToken: newRefreshToken,
+        accessTokenExpiresAt: accessTokenExpiresAt.toISOString(),
+        refreshTokenExpiresAt: refreshTokenExpiresAt.toISOString(),
         message: 'Token refreshed successfully',
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const err = error as { name?: string };
+    if (err.name === 'TokenExpiredError') {
+      next(new AppError('Refresh token expired', 401));
+      return;
+    }
+    if (err.name === 'JsonWebTokenError') {
+      next(new AppError('Invalid refresh token', 401));
+      return;
+    }
     next(error);
   }
 };
