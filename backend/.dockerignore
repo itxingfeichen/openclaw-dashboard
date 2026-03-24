@@ -1,0 +1,86 @@
+# Dependencies - will be installed in container
+node_modules
+npm-debug.log
+yarn-error.log
+yarn.lock
+
+# Build output - will be generated in container
+dist
+build
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.test
+.env.development
+.env.production
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test files
+coverage
+*.test.ts
+*.test.tsx
+*.test.js
+*.test.jsx
+*.spec.ts
+*.spec.tsx
+*.spec.js
+*.spec.jsx
+__tests__
+test
+tests
+
+# Documentation
+*.md
+!README.md
+docs
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker files (not needed inside container)
+Dockerfile
+docker-compose*.yml
+docker-compose*.yaml
+.dockerignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+
+# Misc
+*.log
+tmp
+temp
+.cache
+.eslintcache
+*.tgz
+
+# TypeScript build info (not needed in production)
+tsconfig.tsbuildinfo
+
+# Development database
+dev.db
+*.db

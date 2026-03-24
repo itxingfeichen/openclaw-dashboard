@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # Database service (SQLite doesn't need a separate container, but we include it for future extensibility)
+  # For now, SQLite data is stored in a volume mounted to the backend service
+  database:
+    image: alpine:latest
+    container_name: openclaw-dashboard-db
+    volumes:
+      - db-data:/app/data
+    command: sh -c "echo 'SQLite database - data stored in volume'"
+    networks:
+      - openclaw-network
+    restart: unless-stopped
+
+  # Backend API service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: openclaw-dashboard-backend
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=file:/app/data/dev.db
+      - CORS_ORIGIN=http://localhost:80
+      - API_PREFIX=/api
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+    volumes:
+      - db-data:/app/data
+    ports:
+      - "3001:3001"
+    depends_on:
+      database:
+        condition: service_started
+    networks:
+      - openclaw-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: openclaw-dashboard-frontend
+    environment:
+      - VITE_API_URL=http://localhost:3001/api
+      - VITE_APP_TITLE=OpenClaw Dashboard
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - openclaw-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+networks:
+  openclaw-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
