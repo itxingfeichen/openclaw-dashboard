@@ -26,6 +26,9 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
+# Install wget for healthcheck
+RUN apk add --no-cache wget
+
 # Copy package files
 COPY package*.json ./
 
