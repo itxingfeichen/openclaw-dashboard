@@ -1,9 +1,16 @@
 import { Router } from 'express';
-import { register, login, logout, getCurrentUser, refreshToken } from '../controllers/auth.controller';
-import { validateRequest } from '../middleware/validateRequest';
-import { registerSchema, loginSchema } from '../validators/auth.validator';
-import { authLimiter } from '../middleware/rateLimiter';
-import { authenticate } from '../middleware/auth';
+import {
+  register,
+  login,
+  logout,
+  getCurrentUser,
+  refreshToken,
+  verify,
+} from '../controllers/auth.controller.js';
+import { validateRequest } from '../middleware/validateRequest.js';
+import { registerSchema, loginSchema } from '../validators/auth.validator.js';
+import { authLimiter } from '../middleware/rateLimiter.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router: Router = Router();
 
@@ -20,6 +27,13 @@ router.post('/register', authLimiter, validateRequest(registerSchema), register)
  * @access  Public
  */
 router.post('/login', authLimiter, validateRequest(loginSchema), login);
+
+/**
+ * @route   GET /api/auth/verify
+ * @desc    Verify JWT token validity
+ * @access  Public (requires token)
+ */
+router.get('/verify', authenticate, verify);
 
 /**
  * @route   POST /api/auth/logout

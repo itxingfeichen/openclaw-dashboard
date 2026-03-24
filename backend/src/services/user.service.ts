@@ -1,15 +1,16 @@
 /**
  * User Service
- * Handles user-related business logic
+ * Handles user-related business logic with Prisma and bcrypt
  */
+
+import { prisma } from '../lib/prisma.js';
+import bcrypt from 'bcrypt';
 
 export interface User {
   id: string;
-  username: string;
   email: string;
   password: string;
-  name?: string;
-  displayName?: string;
+  name?: string | null;
   role: string;
   createdAt: Date;
   updatedAt: Date;
@@ -17,7 +18,6 @@ export interface User {
 
 export interface CreateUserInput {
   email: string;
-  username: string;
   password: string;
   name?: string;
   role?: string;
@@ -25,9 +25,7 @@ export interface CreateUserInput {
 
 export interface UpdateUserInput {
   email?: string;
-  username?: string;
   name?: string;
-  displayName?: string;
   role?: string;
 }
 
@@ -37,86 +35,125 @@ export interface FindAllOptions {
 }
 
 class UserService {
-  private users: Map<string, User> = new Map();
-
-  constructor() {
-    // Initialize with a default admin user
-    const adminUser: User = {
-      id: 'admin-001',
-      email: 'admin@example.com',
-      username: 'admin',
-      password: 'admin123',
-      name: 'Administrator',
-      displayName: 'Admin',
-      role: 'admin',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.users.set(adminUser.id, adminUser);
-  }
+  private readonly saltRounds = 10;
 
   /**
    * Find all users with pagination
    */
-  findAll(options: FindAllOptions): User[] {
-    const allUsers = Array.from(this.users.values());
-    return allUsers.slice(options.offset, options.offset + options.limit);
+  async findAll(options: FindAllOptions): Promise<User[]> {
+    const users = await prisma.user.findMany({
+      skip: options.offset,
+      take: options.limit,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    return users as unknown as User[];
   }
 
   /**
    * Count total users
    */
-  count(): number {
-    return this.users.size;
+  async count(): Promise<number> {
+    return prisma.user.count();
   }
 
-  create(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): User {
-    const newUser: User = {
-      ...user,
-      id: crypto.randomUUID(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.users.set(newUser.id, newUser);
-    return newUser;
+  /**
+   * Create a new user with hashed password
+   */
+  async create(userData: CreateUserInput): Promise<User> {
+    const hashedPassword = await bcrypt.hash(userData.password, this.saltRounds);
+
+    const user = await prisma.user.create({
+      data: {
+        email: userData.email,
+        password: hashedPassword,
+        name: userData.name,
+        role: userData.role || 'user',
+      },
+    });
+
+    return user as unknown as User;
   }
 
-  findById(id: string): User | undefined {
-    return this.users.get(id);
+  /**
+   * Find user by ID
+   */
+  async findById(id: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    return user as unknown as User | null;
   }
 
-  findByEmail(email: string): User | undefined {
-    return Array.from(this.users.values()).find((u) => u.email === email);
+  /**
+   * Find user by email
+   */
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    return user as unknown as User | null;
   }
 
-  findByUsername(username: string): User | undefined {
-    return Array.from(this.users.values()).find((u) => u.username === username);
+  /**
+   * Update user
+   */
+  async update(id: string, updates: UpdateUserInput): Promise<User | null> {
+    const user = await prisma.user.update({
+      where: { id },
+      data: updates,
+    });
+    return user as unknown as User | null;
   }
 
-  update(id: string, updates: Partial<User>): User | undefined {
-    const user = this.users.get(id);
-    if (!user) return undefined;
-
-    const updatedUser: User = {
-      ...user,
-      ...updates,
-      displayName: updates.displayName || updates.name || user.displayName,
-      updatedAt: new Date(),
-    };
-    this.users.set(id, updatedUser);
-    return updatedUser;
+  /**
+   * Delete user
+   */
+  async delete(id: string): Promise<boolean> {
+    await prisma.user.delete({
+      where: { id },
+    });
+    return true;
   }
 
-  delete(id: string): boolean {
-    return this.users.delete(id);
+  /**
+   * Check if user exists by email
+   */
+  async existsByEmail(email: string, excludeId?: string): Promise<boolean> {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    return user !== null && user.id !== excludeId;
   }
 
-  exists(email?: string, username?: string, excludeId?: string): boolean {
-    return Array.from(this.users.values()).some(
-      (u) =>
-        u.id !== excludeId &&
-        ((email && u.email === email) || (username && u.username === username))
-    );
+  /**
+   * Verify password against hashed password
+   */
+  async verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
+    return bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  /**
+   * Initialize database with admin user if not exists
+   */
+  async initializeAdmin(): Promise<void> {
+    const adminExists = await this.existsByEmail('admin@example.com');
+    
+    if (!adminExists) {
+      await this.create({
+        email: 'admin@example.com',
+        password: 'admin123',
+        name: 'Administrator',
+        role: 'admin',
+      });
+      console.log('✅ Admin user created');
+    }
   }
 }
 

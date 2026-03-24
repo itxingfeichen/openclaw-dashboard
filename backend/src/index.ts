@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import apiRoutes from './routes';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-import { requestLogger } from './middleware/requestLogger';
+import apiRoutes from './routes/index.js';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { requestLogger } from './middleware/requestLogger.js';
+import { connectDatabase } from './lib/prisma.js';
 
 dotenv.config();
 
@@ -59,12 +60,24 @@ app.use(notFoundHandler);
 // Global error handler - must be registered last
 app.use(errorHandler);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Backend server running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api/docs`);
-  console.log(`🔧 Environment: ${NODE_ENV}`);
-});
+// Initialize database connection and start server
+async function startServer() {
+  try {
+    await connectDatabase();
+    console.log('✅ Database connection established');
+  } catch (error) {
+    console.error('❌ Failed to connect to database:', error);
+    process.exit(1);
+  }
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Backend server running on http://localhost:${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`📚 API Documentation: http://localhost:${PORT}/api/docs`);
+    console.log(`🔧 Environment: ${NODE_ENV}`);
+  });
+}
+
+startServer();
 
 export default app;
