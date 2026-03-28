@@ -37,9 +37,9 @@ router.get('/me', authenticate, getCurrentUser);
 
 /**
  * @route   POST /api/auth/refresh
- * @desc    Refresh access token
- * @access  Private
+ * @desc    Refresh access token using refresh token
+ * @access  Public (requires valid refresh token in body)
  */
-router.post('/refresh', authenticate, refreshToken);
+router.post('/refresh', refreshToken);
 
 export default router;

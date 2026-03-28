@@ -62,7 +62,10 @@ export const createUser = async (
       throw new AppError('Email or username already in use', 409);
     }
 
-    const user = userService.create(userData);
+    const user = userService.create({
+      ...userData,
+      role: userData.role || 'user',
+    });
 
     res.status(201).json({
       success: true,
